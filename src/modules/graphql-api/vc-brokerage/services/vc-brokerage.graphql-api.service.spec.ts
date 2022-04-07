@@ -1,5 +1,5 @@
 import { Test } from '@nestjs/testing';
-import {VCBrokerageGraphqlApiService} from "@/modules/graphql-api/vc-bokerage/services/vc-brokerage.graphql-api.service";
+import {VCBrokerageGraphqlApiService} from "@/modules/graphql-api/vc-brokerage/services/vc-brokerage.graphql-api.service";
 
 describe('VCBrokerageGraphqlAPIService', () => {
   let service: VCBrokerageGraphqlApiService;

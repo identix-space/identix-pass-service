@@ -3,8 +3,8 @@ import {TypeOrmModule} from "@nestjs/typeorm";
 
 import {UsersEntity} from "@/libs/database/entities";
 import {LoggingModule} from "@/libs/logging/logging.module";
-import {VCBrokerageGraphqlApiService} from "@/modules/graphql-api/vc-bokerage/services/vc-brokerage.graphql-api.service";
-import {VcBrokerageGraphqlApiResolvers} from "@/modules/graphql-api/vc-bokerage/resolvers/vc-brokerage.graphql-api.resolvers";
+import {VCBrokerageGraphqlApiService} from "@/modules/graphql-api/vc-brokerage/services/vc-brokerage.graphql-api.service";
+import {VcBrokerageGraphqlApiResolvers} from "@/modules/graphql-api/vc-brokerage/resolvers/vc-brokerage.graphql-api.resolvers";
 
 @Module({
   imports: [
