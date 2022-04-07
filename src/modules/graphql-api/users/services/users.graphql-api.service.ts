@@ -7,7 +7,7 @@ import {UsersEntity, UsersListSearchResult} from "@/libs/database/entities";
 import {TUserUpdate, TUserCreate} from "@/modules/graphql-api/users/types";
 
 @Injectable()
-export class UsersService {
+export class UsersGraphqlApiService {
   constructor(
     @InjectRepository(UsersEntity)
     private usersRepository: Repository<UsersEntity>

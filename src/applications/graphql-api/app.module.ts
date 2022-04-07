@@ -6,7 +6,7 @@ import {DatabaseModule} from "@/libs/database/database.module";
 import {LoggingModule} from "@/libs/logging/logging.module";
 import {AppLoggerMiddleware} from "@/libs/logging/middlewares/app-logger.middleware";
 import {GraphQLAppModule} from "@/libs/graphql/graphql.module";
-import {UsersModule} from "@/modules/graphql-api/users/users.module";
+import {GraphQLApiModule} from "@/modules/graphql-api/graphql-api.module";
 
 @Module({
   imports: [
@@ -14,7 +14,7 @@ import {UsersModule} from "@/modules/graphql-api/users/users.module";
     DatabaseModule,
     GraphQLAppModule.forRoot(),
     LoggingModule.forRoot({serviceName: 'Nest.JS GraphQL API'}),
-    UsersModule,
+    GraphQLApiModule,
   ],
   providers: [],
   controllers: []

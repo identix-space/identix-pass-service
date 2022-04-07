@@ -3,10 +3,10 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { UsersEntity } from '@/libs/database/entities';
-import { UsersService } from './users.service';
+import { UsersGraphqlApiService } from './users.graphql-api.service';
 
 describe('UsersService', () => {
-  let service: UsersService;
+  let service: UsersGraphqlApiService;
   let usersRepositoryMock: Repository<UsersEntity>;
   const usersRepositoryToken = getRepositoryToken(UsersEntity);
 
@@ -21,11 +21,11 @@ describe('UsersService', () => {
             save: () => ({}),
           },
         },
-        UsersService
+        UsersGraphqlApiService
       ],
     }).compile();
 
-    service = module.get<UsersService>(UsersService);
+    service = module.get<UsersGraphqlApiService>(UsersGraphqlApiService);
     usersRepositoryMock = module.get(usersRepositoryToken);
 
     jest.clearAllMocks();

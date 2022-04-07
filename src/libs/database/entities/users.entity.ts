@@ -1,14 +1,11 @@
 import {
   Column,
   Entity,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm';
 import {Field, Int, ObjectType} from "@nestjs/graphql";
 
-import {UsersProfilesEntity} from "@/libs/database/entities/users-profiles.entity";
-import {PasswordsEntity} from "@/libs/database/entities/passwords.entity";
 
 @Entity("users")
 @ObjectType()
@@ -69,12 +66,6 @@ export class UsersEntity {
   })
   @Field({nullable: false})
   public updatedAt: Date;
-
-  @OneToOne(() => UsersProfilesEntity, profile => profile.user)
-  public profile: UsersProfilesEntity
-
-  @OneToOne(() => PasswordsEntity, password => password.user)
-  public password: PasswordsEntity;
 }
 
 export class UsersListSearchResult {
