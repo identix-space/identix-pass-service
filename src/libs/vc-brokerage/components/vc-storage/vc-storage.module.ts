@@ -11,6 +11,6 @@ import {VCSchemesEntity, VCStorageEntity} from "@/libs/database/entities";
     LoggingModule.forRoot({serviceName: 'VC Storage module'})
   ],
   providers: [VcStorageService],
-  exports: []
+  exports: [VcStorageService]
 })
 export class VcStorageModule {}

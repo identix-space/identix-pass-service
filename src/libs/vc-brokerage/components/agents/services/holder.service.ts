@@ -4,7 +4,7 @@ import { AgentsRoles } from "@/libs/vc-brokerage/components/agents/types";
 import { VCData } from "@/libs/vc-brokerage/types";
 
 @Injectable()
-export class IssuerService extends BaseAgentService {
+export class HolderService extends BaseAgentService {
   constructor(public readonly did: string) {
     super(did, AgentsRoles.Holder);
   }

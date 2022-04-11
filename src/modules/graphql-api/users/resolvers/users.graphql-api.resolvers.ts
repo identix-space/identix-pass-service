@@ -1,6 +1,6 @@
 import {Args, Int, Mutation, Query, Resolver} from '@nestjs/graphql';
 import {UsersEntity} from "@/libs/database/entities";
-import {UsersGraphqlApiService} from '@/modules/graphql-api/users/services/users.service';
+import {UsersGraphqlApiService} from '@/modules/graphql-api/users/services/users.graphql-api.service';
 import {TUserCreate, TUserUpdate} from "@/modules/graphql-api/users/types";
 
 @Resolver(of => UsersEntity)
