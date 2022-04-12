@@ -1,7 +1,7 @@
 import {Module} from '@nestjs/common';
 
 import {LoggingModule} from "@/libs/logging/logging.module";
-import {MessagingService} from "@/libs/vc-brokerage/components/messaging/services/messaging.service";
+import {MessagingService} from "@/libs/messaging/services/messaging.service";
 
 @Module({
   imports: [

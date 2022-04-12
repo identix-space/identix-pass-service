@@ -5,7 +5,7 @@ import {
   VCStorageConfigurationType,
   IVCStorageClient,
   WalletsKinds,
-  IWalletClient
+  IVault
 } from "../types";
 import {LoggingService} from "@/libs/logging/services/logging.service";
 import {CustodialLocalWalletClient} from "@/libs/vc-brokerage/components/vault/clients/custodial-local-wallet.client";
@@ -36,7 +36,7 @@ function vcStorageClientFactory(
     throw new Error(`VC storage configuration is invalid!`);
   }
 
-  const getWalletClient = (walletKind: WalletsKinds): IWalletClient => {
+  const getWalletClient = (walletKind: WalletsKinds): IVault => {
     switch (walletKind) {
       case WalletsKinds.CustodialLocalWallet:
         return custodialLocalWalletClient;

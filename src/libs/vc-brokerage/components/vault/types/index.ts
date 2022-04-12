@@ -13,7 +13,9 @@ export interface IVCStorageClient {
   deleteVC: (walletKind: WalletsKinds, did: string) => Promise<void>;
 }
 
-export interface IVault {
+export type IVCVaultFactory = (did: string) => IVcVault;
+
+export interface IVcVault {
   createVC: (did: string, vcData: VCData) => Promise<string>;
   readVC: (did: string) => Promise<VCData>;
   updateVC: (did: string, vcData: VCData) => Promise<void>;
