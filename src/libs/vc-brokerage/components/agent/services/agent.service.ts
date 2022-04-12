@@ -1,12 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { BaseAgentService } from './base/base.agent.service';
-import { AgentsRoles } from "@/libs/vc-brokerage/components/agents/types";
+import { AgentsRoles } from "@/libs/vc-brokerage/components/agent/types";
 import { VCData } from "@/libs/vc-brokerage/types";
+import {IVcMessageDb, IVcWallet} from "../../../../../../../vc-brokerage/src/vc-core/interfaces";
+import {IVcBrokerComponent} from "../../../../../../../vc-brokerage/src/vc-core/control-interfaces";
 
 @Injectable()
-export class HolderService extends BaseAgentService {
-  constructor(public readonly did: string) {
-    super(did, AgentsRoles.Holder);
+export class AgentService {
+  constructor(
+    private vault?: IVcVault,
+    private _broker?: IVcBrokerComponent;
+    private _msg?: IVcMessageDb;
+    private _issuerSchemes?: VcScheme[];
+  ) {
+
   }
 
   public async createVC(issuerDid: string, vc: VCData, schemeDid: string): Promise<string> { // returns VC did

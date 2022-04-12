@@ -13,7 +13,7 @@ export interface IVCStorageClient {
   deleteVC: (walletKind: WalletsKinds, did: string) => Promise<void>;
 }
 
-export interface IWalletClient {
+export interface IVault {
   createVC: (did: string, vcData: VCData) => Promise<string>;
   readVC: (did: string) => Promise<VCData>;
   updateVC: (did: string, vcData: VCData) => Promise<void>;

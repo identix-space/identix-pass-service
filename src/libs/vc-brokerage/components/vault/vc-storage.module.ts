@@ -1,7 +1,7 @@
 import {Module} from '@nestjs/common';
 
 import {LoggingModule} from "@/libs/logging/logging.module";
-import {VcStorageService} from "@/libs/vc-brokerage/components/vc-storage/services/vc-storage.service";
+import {VcStorageService} from "@/libs/vc-brokerage/components/vault/services/vc-storage.service";
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {VCSchemesEntity, VCStorageEntity} from "@/libs/database/entities";
 

@@ -1,6 +1,6 @@
 import {Injectable} from "@nestjs/common";
 import {VCData} from "@/libs/vc-brokerage/types";
-import {IWalletClient} from "@/libs/vc-brokerage/components/vc-storage/types";
+import {IWalletClient} from "@/libs/vc-brokerage/components/vault/types";
 
 @Injectable()
 export class VcStorageService {

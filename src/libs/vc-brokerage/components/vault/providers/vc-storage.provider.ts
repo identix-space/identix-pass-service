@@ -8,9 +8,9 @@ import {
   IWalletClient
 } from "../types";
 import {LoggingService} from "@/libs/logging/services/logging.service";
-import {CustodialLocalWalletClient} from "@/libs/vc-brokerage/components/vc-storage/clients/custodial-local-wallet.client";
+import {CustodialLocalWalletClient} from "@/libs/vc-brokerage/components/vault/clients/custodial-local-wallet.client";
 import {VCData} from "@/libs/vc-brokerage/types";
-import {VcStorageService} from "@/libs/vc-brokerage/components/vc-storage/services/vc-storage.service";
+import {VcStorageService} from "@/libs/vc-brokerage/components/vault/services/vc-storage.service";
 
 export const VCStorageProvider = {
   provide: VCStorageClientProvider,

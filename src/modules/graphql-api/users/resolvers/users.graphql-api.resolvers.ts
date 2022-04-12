@@ -11,6 +11,7 @@ export class UsersGraphqlApiResolvers {
   }
 
   @Mutation(returns => UsersEntity)
+  @AythGuard()
   async createUser(
     @Args('email', {type: () => String}) email: string,
     @Args('address', {type: () => String}) address: string = '',
