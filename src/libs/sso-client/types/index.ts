@@ -13,4 +13,11 @@ export interface ISSOClientService {
 
 export type SSOClientConfiguration = {
   pathToClientDid: string;
+  ssoGraphqlApiUrl: string;
+}
+
+export interface ISsoNpmService {
+  requestClientLogin: (clientDid: Did) => Promise<Did>;
+  attemptClientLogin: (clientDid: Did, signedOtcDid: Did) => Promise<Did>;
+  validateUserSession: (clientSessionDid: Did, userSessionDid: Did) => Promise<Did>;
 }

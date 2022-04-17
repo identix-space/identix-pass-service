@@ -1,5 +1,6 @@
 import {Test, TestingModule} from '@nestjs/testing';
 
+import {SsoService} from "identix-sso-client-js";
 import {SsoClientService} from './sso-client.service';
 
 describe('SsoClientService', () => {
@@ -18,7 +19,18 @@ describe('SsoClientService', () => {
     expect(service).toBeDefined();
   });
 
-  it('getToken(): result should be defined', async () => {
+  it('registerSession(): result should be defined', async () => {
+    const ssoServiceMock = {} as SsoService;
+    service.init(ssoServiceMock);
+
+    const result = await service.registerSession('client:did:123456');
+    expect(result).toBeDefined();
+  });
+
+  it('validateUserSession(): result should be defined', async () => {
+    const ssoServiceMock = {} as SsoService;
+    service.init(ssoServiceMock);
+
     const result = await service.validateUserSession('client:did:123456', 'user:did:54321');
     expect(result).toBeDefined();
   });

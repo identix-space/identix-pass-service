@@ -7,6 +7,7 @@ import {SSOClient, ISSOClient, SSOClientConfiguration} from "@/libs/sso-client/t
 import {LoggingService} from "@/libs/logging/services/logging.service";
 import {Did} from "@/libs/vc-brokerage/types";
 import {SsoClientService} from "@/libs/sso-client/services/sso-client.service";
+import {SsoService} from "identix-sso-client-js";
 
 const readFileAsync = promisify(readFile);
 
@@ -30,18 +31,20 @@ async function  ssoClientFactory(
   ssoClientService: SsoClientService
 ): Promise<ISSOClient> {
   const ssoClientConfig = config.get<SSOClientConfiguration>('sso-client-configuration');
-  if (!ssoClientConfig || !ssoClientConfig.pathToClientDid) {
+  if (!ssoClientConfig || !ssoClientConfig.pathToClientDid || !ssoClientConfig.ssoGraphqlApiUrl) {
     throw new Error(`SSO Client configuration is invalid!`);
   }
-  const  fullClientDifPath = `${process.cwd()}/${ssoClientConfig.pathToClientDid}`;
 
+  ssoClientService.init(new SsoService(ssoClientConfig.ssoGraphqlApiUrl));
+
+  const  fullClientDifPath = `${process.cwd()}/${ssoClientConfig.pathToClientDid}`;
   if (!existsSync(fullClientDifPath)) {
     throw new Error(`SSO Client configuration is invalid: client Did path is incorrect!`);
   }
 
-  const clientDidJson = await readFileAsync(fullClientDifPath);
   let clientDid = null;
   try {
+    const clientDidJson = await readFileAsync(fullClientDifPath);
     clientDid = JSON.parse(clientDidJson.toString());
   } catch (e) {
     throw new Error(`SSO Client Did is invalid: ${e.message}`);
@@ -51,7 +54,7 @@ async function  ssoClientFactory(
   try {
     clientSessionDid = await ssoClientService.registerSession(clientDid);
   } catch (e) {
-    throw new Error(`SSO Client Did is invalid. Impossible to get session Did: ${e.message}`);
+    throw new Error(`SSO Client Did is invalid. Impossible to get Session Did: ${e.message}`);
   }
 
   return {
