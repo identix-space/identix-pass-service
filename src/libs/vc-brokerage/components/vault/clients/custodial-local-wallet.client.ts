@@ -2,11 +2,11 @@ import {Injectable} from "@nestjs/common";
 import {InjectRepository} from "@nestjs/typeorm";
 import {VCStorageEntity, VCSchemesEntity} from "@/libs/database/entities";
 import {Repository} from "typeorm";
-import {IWalletClient} from "@/libs/vc-brokerage/components/vault/types";
+import {IVcVault} from "@/libs/vc-brokerage/components/vault/types";
 import {VCData} from "@/libs/vc-brokerage/types";
 
 @Injectable()
-export class CustodialLocalWalletClient implements IWalletClient {
+export class CustodialLocalWalletClient implements IVcVault {
   constructor(
     @InjectRepository(VCStorageEntity)
     private vcStorageRepository: Repository<VCStorageEntity>,

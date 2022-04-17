@@ -1,18 +1,14 @@
 import {Injectable} from "@nestjs/common";
-
-type SessionData = {
-  did: string;
-}
+import {ISSOClientService} from "@/libs/sso-client/types";
+import {Did} from "@/libs/vc-brokerage/types";
 
 @Injectable()
-export class SsoClientService {
-  constructor() {}
+export class SsoClientService implements ISSOClientService{
+  public async registerSession(clientDid: Did): Promise<Did> {
+    return;
 
-  public async  getToken(did: string, secret: string): Promise<string> {
-    return 'token';
   }
-
-  public async authenticate(token: string): Promise<SessionData> {
-    return {did: 'test:did:12345'};
+  public async validateUserSession(clientSessionDid: Did, userSessionDid: Did): Promise<Did> {
+    return
   }
 }

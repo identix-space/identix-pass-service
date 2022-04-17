@@ -1,7 +1,7 @@
 import {Module} from '@nestjs/common';
 
 import {LoggingModule} from "@/libs/logging/logging.module";
-import {BrokerService} from "@/libs/vc-brokerage/components/vc-brokers/services/broker.service";
+import {BrokerService} from "@/libs/vc-brokerage/components/vc-broker/services/broker.service";
 
 @Module({
     imports: [

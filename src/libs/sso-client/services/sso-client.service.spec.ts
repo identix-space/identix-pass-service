@@ -19,7 +19,7 @@ describe('SsoClientService', () => {
   });
 
   it('getToken(): result should be defined', async () => {
-    const result = await service.getToken('test:did:123456', 'secret_api_key');
+    const result = await service.validateUserSession('client:did:123456', 'user:did:54321');
     expect(result).toBeDefined();
   });
 });

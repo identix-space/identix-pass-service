@@ -1,6 +1,6 @@
 import {Test, TestingModule} from '@nestjs/testing';
 
-import {AgentService} from './holder.service';
+import {AgentService} from './agent.service';
 
 describe('HolderService', () => {
   let service: AgentService;

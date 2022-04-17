@@ -1,11 +1,11 @@
 import {Injectable} from "@nestjs/common";
 import {VCData} from "@/libs/vc-brokerage/types";
-import {IWalletClient} from "@/libs/vc-brokerage/components/vault/types";
+import {IVcVault} from "@/libs/vc-brokerage/components/vault/types";
 
 @Injectable()
 export class VcStorageService {
     constructor(
-      protected readonly walletClient: IWalletClient
+      protected readonly walletClient: IVcVault
     ) {}
 
     public async  createVC(did: string, vcData: VCData): Promise<string> {

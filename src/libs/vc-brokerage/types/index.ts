@@ -7,3 +7,11 @@ export interface IVcSchema {
   did: Did,
   schema: string
 }
+
+export interface IVcMessage {
+  did: string;
+  message: string;
+}
+export interface IIssueVcProperties {
+  [key: string]: IIssueVcProperties
+}

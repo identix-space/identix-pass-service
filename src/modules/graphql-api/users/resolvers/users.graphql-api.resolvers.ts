@@ -1,7 +1,9 @@
+import {UseGuards} from "@nestjs/common";
 import {Args, Int, Mutation, Query, Resolver} from '@nestjs/graphql';
 import {UsersEntity} from "@/libs/database/entities";
 import {UsersGraphqlApiService} from '@/modules/graphql-api/users/services/users.graphql-api.service';
 import {TUserCreate, TUserUpdate} from "@/modules/graphql-api/users/types";
+import {SsoAuthGuard} from "@/modules/authentication/guards/sso-auth.guard";
 
 @Resolver(of => UsersEntity)
 export class UsersGraphqlApiResolvers {
@@ -10,8 +12,8 @@ export class UsersGraphqlApiResolvers {
   ) {
   }
 
+  @UseGuards(SsoAuthGuard)
   @Mutation(returns => UsersEntity)
-  @AythGuard()
   async createUser(
     @Args('email', {type: () => String}) email: string,
     @Args('address', {type: () => String}) address: string = '',
