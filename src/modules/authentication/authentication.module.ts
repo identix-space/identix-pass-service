@@ -6,7 +6,10 @@ import {SsoStrategy} from './strategies';
 import {SsoClientModule} from "@/libs/sso-client/sso-client.module";
 
 @Module({
-  imports: [PassportModule, SsoClientModule],
+  imports: [
+    PassportModule.register({ defaultStrategy: 'sso' }),
+    SsoClientModule
+  ],
   providers: [AuthenticationService, SsoStrategy],
   exports: [AuthenticationService],
 })

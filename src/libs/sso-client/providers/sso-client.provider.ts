@@ -1,7 +1,7 @@
-import { ConfigService } from '@nestjs/config';
+import {ConfigService} from '@nestjs/config';
 
-import { ReadStream, createReadStream, existsSync, mkdir, readFile, writeFile } from 'fs';
-import { promisify } from 'util';
+import {existsSync, readFile} from 'fs';
+import {promisify} from 'util';
 
 import {SSOClient, ISSOClient, SSOClientConfiguration} from "@/libs/sso-client/types";
 import {LoggingService} from "@/libs/logging/services/logging.service";

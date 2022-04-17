@@ -42,7 +42,7 @@ describe('UsersService', () => {
     it('email is undefined: should trow error', async () => {
       let result;
       try {
-        result = await service.create({email: undefined});
+        result = await service.create({did: undefined});
       } catch (error) {
         expect(error).toBeDefined();
         expect(error.message).toBe('Email is required');
@@ -59,7 +59,7 @@ describe('UsersService', () => {
 
       let result;
       try {
-        result = await service.create({ email: 'test@user.org'});
+        result = await service.create({ did: 'test:did:123'});
       } catch (error) {
         expect(error).toBeDefined();
         expect(error.message).toBe('User already exists');
@@ -69,10 +69,10 @@ describe('UsersService', () => {
     });
 
     it('user not exists: should be create user', async () => {
-      const email = 'test@user.org';
+      const did = 'test:did:123';
 
       const user = new UsersEntity();
-      user.email = email;
+      user.did = did;
 
       jest.spyOn(usersRepositoryMock, 'findOne').mockImplementation(() => {
         return new Promise(resolve => resolve(null));
@@ -82,12 +82,12 @@ describe('UsersService', () => {
         return new Promise(resolve => resolve(user));
       });
 
-      const result = await service.create({ email });
+      const result = await service.create({ did });
 
       expect(userRepoSaveSpy).toBeCalled();
-      expect(userRepoSaveSpy.mock.calls[0][0].email).toBe(user.email);
+      expect(userRepoSaveSpy.mock.calls[0][0].did).toBe(user.did);
       expect(result).toBeDefined();
-      expect(result.email).toBe(email);
+      expect(result.did).toBe(did);
     });
   });
 });
