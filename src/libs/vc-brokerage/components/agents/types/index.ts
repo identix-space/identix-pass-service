@@ -15,8 +15,7 @@ export interface IAgent {
 }
 
 export interface IAgentsSessionsRegistry {
-  createAgentSession: () => void;
-  deleteAgentSession: () => void;
-  getAgent: () => IAgent;
-  clearExpiredSessions: () => void;
+  createAgentSession: (userDid: Did) => void;
+  deleteAgentSession: (userDid: Did) => void;
+  getAgent: (userDid: Did) => IAgent;
 }

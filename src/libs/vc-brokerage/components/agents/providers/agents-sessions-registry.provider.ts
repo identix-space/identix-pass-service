@@ -1,29 +1,39 @@
-import {IVCStorageClient, VCStorageClientProvider} from "@/libs/vc-brokerage/components/vault/types";
+import {VCStorageClientProvider} from "@/libs/vc-brokerage/components/vault/types";
 import {ConfigService} from "@nestjs/config";
 import {LoggingService} from "@/libs/logging/services/logging.service";
-import {CustodialLocalWalletClient} from "@/libs/vc-brokerage/components/vault/clients/custodial-local-wallet.client";
-import {VcStorageService} from "@/libs/vc-brokerage/components/vault/services/vc-storage.service";
-import {IAgentsSessionsRegistry} from "../types";
+import {IAgent, IAgentsSessionsRegistry} from "../types";
+import {AgentService} from "@/libs/vc-brokerage/components/agents/services/agent.service";
+import {Did} from "@/libs/vc-brokerage/types";
 
 export const AgentsSessionsRegistryProvider = {
   provide: VCStorageClientProvider,
   useFactory: (config: ConfigService,
-               logger: LoggingService,
-               custodialLocalWalletClient: any
+               logger: LoggingService
                ): Promise<IAgentsSessionsRegistry> =>
-    vcStorageClientFactory(config, logger, custodialLocalWalletClient),
+    agentsSessionsRegistryFactory(config, logger),
   inject: [
     ConfigService,
-    LoggingService,
-    CustodialLocalWalletClient,
-    VcStorageService
+    LoggingService
   ],
 };
 
-async function  vcStorageClientFactory(
+async function  agentsSessionsRegistryFactory(
   config: ConfigService,
-  logger: LoggingService,
-  custodialLocalWalletClient: any
+  logger: LoggingService
 ): Promise<IAgentsSessionsRegistry> {
-  return;
+  const agentsSessionsStorage: Map<Did, AgentService> = new Map<Did, AgentService>();
+
+  const clearExpiredSessions =  () => {};
+
+  return {
+    createAgentSession: (userDid: Did): void  => {
+      const agent = new AgentService();
+    },
+    deleteAgentSession: (userDid: Did): void =>  {
+
+    },
+    getAgent: (userDid: Did): IAgent =>  {
+      return;
+    }
+  }
 }
