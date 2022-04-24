@@ -8,6 +8,7 @@ import {AppLoggerMiddleware} from "@/libs/logging/middlewares/app-logger.middlew
 import {GraphQLAppModule} from "@/libs/graphql/graphql.module";
 import {GraphQLApiModule} from "@/modules/graphql-api/graphql-api.module";
 import {AuthenticationModule} from "@/modules/authentication/authentication.module";
+import {MessagingModule} from "@/libs/messaging/messaging.module";
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import {AuthenticationModule} from "@/modules/authentication/authentication.modu
     LoggingModule.forRoot({serviceName: 'Nest.JS GraphQL API'}),
     GraphQLApiModule,
     AuthenticationModule,
+    MessagingModule
   ],
   providers: [],
   controllers: []
