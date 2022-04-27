@@ -48,8 +48,7 @@ pipeline {
                         sh('''#!/bin/bash
                           echo Branch Name: $BRANCH_NAME
                           cd /var/www/identix-pass/$BRANCH_NAME
-                          docker-compose build
-                          docker-compose run identix-web-backend npm run prisma:deploy 
+                          docker-compose run identix-pass-backend npm run prisma:deploy 
                         ''')
                     }
                 post {
@@ -68,7 +67,7 @@ pipeline {
                         running("${STAGE_NAME}")
                           sh('''#!/bin/bash
                           echo Branch Name: $BRANCH_NAME
-                          cd /var/www/identix-web/$BRANCH_NAME
+                          cd /var/www/identix-pass/$BRANCH_NAME
                           docker-compose up -d 
                         ''')
                     }
