@@ -48,7 +48,7 @@ pipeline {
                         sh('''#!/bin/bash
                           echo Branch Name: $BRANCH_NAME
                           cd /var/www/identix-pass/$BRANCH_NAME
-                          docker-compose run identix-pass-backend npm run prisma:deploy 
+                          docker-compose run identix-pass-backend yarn typeorm:run 
                         ''')
                     }
                 post {
