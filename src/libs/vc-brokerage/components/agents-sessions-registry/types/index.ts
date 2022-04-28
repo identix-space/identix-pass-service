@@ -3,12 +3,6 @@ import {AgentService} from "@/libs/vc-brokerage/components/agents-sessions-regis
 
 export const AgentsSessionsRegistry = 'AGENTS_SESSION_REGISTRY';
 
-export enum AgentsRoles {
-  Issuer = 'ISSUER',
-  Holder = 'HOLDER',
-  Verifier = 'VERIFIER',
-}
-
 export interface IAgent {
   configure: (did: Did, vcIssuerSchemas: IVcSchema[]) => void;
   subscribe: (queue: string, handler: () => Promise<void>, checkDuration?: number) => void;

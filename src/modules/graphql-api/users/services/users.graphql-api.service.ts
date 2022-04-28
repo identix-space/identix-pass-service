@@ -4,6 +4,7 @@ import {Repository} from "typeorm";
 
 import {UsersEntity, UsersListSearchResult} from "@/libs/database/entities";
 import {TUserCreate} from "@/modules/graphql-api/users/types";
+import {AgentsRoles, VC, Did} from "@/libs/vc-brokerage/types";
 
 @Injectable()
 export class UsersGraphqlApiService {
@@ -11,6 +12,14 @@ export class UsersGraphqlApiService {
     @InjectRepository(UsersEntity)
     private usersRepository: Repository<UsersEntity>
   ) {}
+
+  async getUserVCs(role?: AgentsRoles, page?: number, limit?: number): Promise<VC[]> {
+    return [];
+  }
+
+  async checkAccountExists(did: Did): Promise<boolean> {
+    return true;
+  }
 
   async create(data: TUserCreate): Promise<UsersEntity> {
     const { did, lastActive } = data;

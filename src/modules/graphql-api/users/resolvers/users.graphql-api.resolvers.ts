@@ -1,32 +1,30 @@
 import {UseGuards} from "@nestjs/common";
 import {Args, Int, Mutation, Query, Resolver} from '@nestjs/graphql';
-import {UsersEntity} from "@/libs/database/entities";
 import {UsersGraphqlApiService} from '@/modules/graphql-api/users/services/users.graphql-api.service';
-import {TUserCreate} from "@/modules/graphql-api/users/types";
 import {SsoAuthGuard} from "@/modules/authentication/guards/sso-auth.guard";
+import {AgentsRoles, VC, Did} from "@/libs/vc-brokerage/types";
 
 @UseGuards(SsoAuthGuard)
-@Resolver(of => UsersEntity)
+@Resolver('Users')
 export class UsersGraphqlApiResolvers {
   constructor(
     private usersService: UsersGraphqlApiService,
   ) {
   }
 
-  @Mutation(returns => UsersEntity)
-  async createUser(
-    @Args('did', {type: () => String}) did: string
+  @Query(returns => [VC])
+  async getUserVCs(
+    @Args('role', {type: () => String}) role?: AgentsRoles,
+    @Args('page', {type: () => Int}) page?: number,
+    @Args('limit', {type: () => Int}) limit?: number
   ) {
-    return this.usersService.create({ did } as TUserCreate);
+    return this.usersService.getUserVCs(role, page, limit);
   }
 
-  @Query(returns => UsersEntity)
-  async getUser(@Args('id', {type: () => Int}) id: number) {
-    return this.usersService.findById(id);
-  }
-
-  @Mutation(returns => Boolean)
-  async deleteUser(@Args('id', {type: () => Int}) id: number) {
-    return this.usersService.deleteById(id);
+  @Query(returns => Boolean)
+  async checkAccountExists(
+    @Args('did', {type: () => String}) did: Did
+  ) {
+    return this.usersService.checkAccountExists(did);
   }
 }
