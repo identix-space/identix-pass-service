@@ -4,7 +4,7 @@ import {UsersGraphqlApiService} from '@/modules/graphql-api/users/services/users
 import {SsoAuthGuard} from "@/modules/authentication/guards/sso-auth.guard";
 import {AgentsRoles, VC, Did} from "@/libs/vc-brokerage/types";
 
-@UseGuards(SsoAuthGuard)
+//@UseGuards(SsoAuthGuard)
 @Resolver('Users')
 export class UsersGraphqlApiResolvers {
   constructor(
