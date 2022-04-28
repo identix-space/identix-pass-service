@@ -17,7 +17,7 @@ export class LocalStorageMessagingClient implements IMessagingClient {
     return;
   }
 
-  async subscribe (queue: string, handler: (message: string) => Promise<void>): Promise<string> {
+  async subscribe(queue: string, handler: (message: string) => Promise<void>): Promise<string> {
     return;
   }
 

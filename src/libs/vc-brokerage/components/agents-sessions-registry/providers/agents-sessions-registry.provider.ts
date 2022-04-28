@@ -6,6 +6,7 @@ import {Did} from "@/libs/vc-brokerage/types";
 import {IMessagingClient, MessagingClient} from "@/libs/messaging/types";
 import {BrokersStrategies, IVcBrokersProvider, VcBrokers} from "@/libs/vc-brokerage/components/vc-brokers/types";
 import {IVcSchemesClient, VcSchemesClient} from "@/libs/vc-brokerage/components/vc-schemes/types";
+import {WalletsStorageClient, IWalletsStorageClient} from "@/libs/wallets-storage-client/types";
 
 export const AgentsSessionsRegistryProvider = {
   provide: AgentsSessionsRegistry,
@@ -13,15 +14,17 @@ export const AgentsSessionsRegistryProvider = {
                logger: LoggingService,
                messagingClient: IMessagingClient,
                vcBrokersProvider: IVcBrokersProvider,
-               vcSchemesClient: IVcSchemesClient
+               vcSchemesClient: IVcSchemesClient,
+               walletsStorageClient: IWalletsStorageClient
                ): Promise<IAgentsSessionsRegistry> =>
-    agentsSessionsRegistryFactory(config, logger, messagingClient, vcBrokersProvider, vcSchemesClient),
+    agentsSessionsRegistryFactory(config, logger, messagingClient, vcBrokersProvider, vcSchemesClient, walletsStorageClient),
   inject: [
     ConfigService,
     LoggingService,
     MessagingClient,
     VcBrokers,
-    VcSchemesClient
+    VcSchemesClient,
+    WalletsStorageClient
   ],
 };
 
@@ -30,7 +33,8 @@ async function  agentsSessionsRegistryFactory(
   logger: LoggingService,
   messagingClient: IMessagingClient,
   vcBrokersProvider: IVcBrokersProvider,
-  vcSchemesClient: IVcSchemesClient
+  vcSchemesClient: IVcSchemesClient,
+  walletsStorageClient: IWalletsStorageClient
 ): Promise<IAgentsSessionsRegistry> {
   const agentsSessionsStorage: Map<Did, AgentService> = new Map<Did, AgentService>();
 
@@ -40,7 +44,7 @@ async function  agentsSessionsRegistryFactory(
 
   return {
     createAgentSession: (agentDid: Did): void  => {
-      const agent = new AgentService(messagingClient, vcBroker, vcSchemesClient);
+      const agent = new AgentService(messagingClient, vcBroker, vcSchemesClient, walletsStorageClient);
 
       if (!agentsSessionsStorage.has(agentDid)) {
         agentsSessionsStorage.set(agentDid, agent);

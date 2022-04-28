@@ -6,9 +6,11 @@ import {TypeOrmModule} from "@nestjs/typeorm";
 import {MqStorageEntity} from "@/libs/database/entities";
 import {LocalStorageMessagingClient} from "@/libs/messaging/clients/local-storage-messaging.client";
 import {MessagingClientProvider} from "@/libs/messaging/providers/messaging-client.provider";
+import {ConfigModule} from "@nestjs/config";
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     TypeOrmModule.forFeature([MqStorageEntity]),
     LoggingModule.forRoot({serviceName: 'Messaging module'})
   ],

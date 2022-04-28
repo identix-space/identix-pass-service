@@ -1,25 +1,18 @@
 import {VCData} from "@/libs/vc-brokerage/types";
 
-export enum WalletsKinds {
-  CustodialLocalWallet = 'CUSTODIAL_LOCAL_WALLET',
+export enum WalletsStorageKinds {
+  identixWalletsStorage = 'IDENTIX_STORAGE_WALLETS',
 }
 
-export const VCStorageClientProvider = 'VC_STORAGE_CLIENT_PROVIDER';
+export const WalletsStorageClient = 'VC_STORAGE_CLIENT';
 
-export interface IVCStorageClient {
-  createVC: (walletKind: WalletsKinds, did: string, vcData: VCData) => Promise<string>;
-  readVC: (walletKind: WalletsKinds, did: string) => Promise<VCData>;
-  updateVC: (walletKind: WalletsKinds, did: string, vcData: VCData) => Promise<void>;
-  deleteVC: (walletKind: WalletsKinds, did: string) => Promise<void>;
-}
-
-export type IVCVaultFactory = (did: string) => IVcVault;
-
-export interface IVcVault {
+export interface IWalletsStorageClient {
   createVC: (did: string, vcData: VCData) => Promise<string>;
   readVC: (did: string) => Promise<VCData>;
   updateVC: (did: string, vcData: VCData) => Promise<void>;
   deleteVC: (did: string) => Promise<void>;
 }
 
-export type VCStorageConfigurationType = {}
+export type WalletsStorageConfiguration = {
+  walletsStorageUrl: string;
+}
