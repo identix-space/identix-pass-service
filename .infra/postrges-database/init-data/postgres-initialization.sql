@@ -1,4 +1,4 @@
-CREATE ROLE "user" LOGIN PASSWORD 'password';
+-- CREATE ROLE "user" LOGIN PASSWORD 'password';
 
 CREATE DATABASE "demo-db"
     WITH
