@@ -1,8 +1,8 @@
 -- CREATE ROLE "user" LOGIN PASSWORD 'password';
 
-CREATE DATABASE "demo-db"
+CREATE DATABASE "identix-pass-dev"
     WITH
-    OWNER = "user"
+    OWNER = "developer"
     ENCODING = "UTF8"
     CONNECTION LIMIT = -1;
 
