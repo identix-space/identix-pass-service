@@ -29,9 +29,9 @@ export interface IIssueVcProperties {
 }
 
 export enum AgentsRoles {
-  Issuer = 'ISSUER',
-  Holder = 'HOLDER',
-  Verifier = 'VERIFIER',
+  issuer = 'ISSUER',
+  holder = 'HOLDER',
+  verifier = 'VERIFIER',
 }
 
 registerEnumType(AgentsRoles, {
