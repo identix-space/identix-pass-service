@@ -14,11 +14,11 @@ export class UsersGraphqlApiResolvers {
 
   @Query(returns => [VC])
   async getUserVCs(
-    @Args('role', {type: () => String}) role?: AgentsRoles,
-    @Args('page', {type: () => Int}) page?: number,
-    @Args('limit', {type: () => Int}) limit?: number
+    @Args('role', {type: () => AgentsRoles, nullable: true}) role?: AgentsRoles,
+    @Args('startIndex', {type: () => Int, nullable: true}) startIndex?: number,
+    @Args('count', {type: () => Int, nullable: true}) count?: number
   ) {
-    return this.usersService.getUserVCs(role, page, limit);
+    return this.usersService.getUserVCs(role, startIndex, count);
   }
 
   @Query(returns => Boolean)

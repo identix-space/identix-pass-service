@@ -1,32 +1,18 @@
-import {Field, InputType, ObjectType} from "@nestjs/graphql";
+import {Field, ObjectType, registerEnumType} from "@nestjs/graphql";
 
 export interface VCData {
   [key: string]: string | number | boolean | VCData | VCData[] | null;
 }
 
 export enum VerificationStatuses {
-  pending = 'PENDING',
-  accepted = 'ACCEPTED',
+  pendingApproval = 'PENDING_APPROVAL',
+  approved = 'APPROVED',
   rejected = 'REJECTED'
 }
 
-@ObjectType()
-export class VC {
-  @Field(type => String)
-  did: Did;
-
-  @Field(type => String)
-  issuer: Did;
-
-  @Field(type => String, { nullable: true })
-  holder?: Did;
-
-  @Field(type => String, { nullable: true })
-  verifier?: Did;
-
-  @Field(type => String)
-  data: string;
-}
+registerEnumType(VerificationStatuses, {
+  name: 'VerificationStatuses',
+});
 
 export type Did = string;
 export interface IVcSchema {
@@ -46,4 +32,65 @@ export enum AgentsRoles {
   Issuer = 'ISSUER',
   Holder = 'HOLDER',
   Verifier = 'VERIFIER',
+}
+
+registerEnumType(AgentsRoles, {
+  name: 'AgentsRoles',
+});
+
+@ObjectType()
+export class EventLogEntry {
+  @Field(type => Number)
+  id: number;
+
+  @Field(type => String)
+  created: Date;
+
+  @Field(type => String)
+  owner: Did;
+
+  @Field(type => String)
+  message: string;
+}
+
+@ObjectType()
+class VerificationCase {
+  @Field(type => String)
+  verifierDid: Did;
+
+  @Field(type => VerificationStatuses)
+  status: VerificationStatuses
+}
+
+@ObjectType()
+export class VC {
+  @Field(type => String)
+  vcDid: Did;
+
+  @Field(type => String)
+  vcTypeDid: Did;
+
+  @Field(type => String)
+  vcParams: string; // Serialized JSON key-value struct
+
+  @Field(type => String)
+  vcRawText: string; // Serialized JSON struct incl signatures, JWT
+
+  @Field(type => String)
+  issuerDid: Did;
+
+  @Field(type => String)
+  holderDid: Did;
+
+  @Field(type => String)
+  createdAt: Date;
+
+  @Field(type => String)
+  updatedAt: Date;
+
+  @Field(type => [VerificationCase])
+  verificationCases: Array<{
+    verifierDid: Did,
+    status: VerificationStatuses
+  }>
 }
