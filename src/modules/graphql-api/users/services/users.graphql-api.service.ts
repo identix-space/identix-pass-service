@@ -13,10 +13,6 @@ export class UsersGraphqlApiService {
     private usersRepository: Repository<UsersEntity>
   ) {}
 
-  async getUserVCs(role?: AgentsRoles, page?: number, limit?: number): Promise<VC[]> {
-    return [];
-  }
-
   async checkAccountExists(did: Did): Promise<boolean> {
     return true;
   }
