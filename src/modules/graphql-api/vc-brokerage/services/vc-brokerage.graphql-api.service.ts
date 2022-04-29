@@ -5,11 +5,11 @@ import {AgentsRoles, Did, VC} from "@/libs/vc-brokerage/types";
 export class VCBrokerageGraphqlApiService {
   constructor() {}
 
-  async getUserVCs(role?: AgentsRoles): Promise<VC[]> {
+  async getUserVCs(role?: AgentsRoles, page?: number, limit?: number): Promise<VC[]> {
     return [];
   }
 
-  async checkAccountExists(did: Did): Promise<boolean> {
+  async issuerVc(holderDid: Did, vcTypeDid: Did, vcParams: string): Promise<boolean> {
     return true;
   }
 }
