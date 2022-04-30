@@ -1,9 +1,8 @@
-import {ExecutionContext, UseGuards} from "@nestjs/common";
+import {UseGuards} from "@nestjs/common";
 import {SsoAuthGuard} from "@/modules/authentication/guards/sso-auth.guard";
 import {Args, Context, GqlExecutionContext, Query, Resolver} from '@nestjs/graphql';
 import {UsersGraphqlApiService} from '@/modules/graphql-api/users/services/users.graphql-api.service';
 import {Did} from "@/libs/vc-brokerage/types";
-import {ExtendedRequest} from "@/modules/authentication/types";
 
 @UseGuards(SsoAuthGuard)
 @Resolver('Users')
