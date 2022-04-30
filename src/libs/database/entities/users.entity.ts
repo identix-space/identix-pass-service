@@ -1,14 +1,11 @@
 import {
   Column,
   Entity,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm';
 import {Field, Int, ObjectType} from "@nestjs/graphql";
 
-import {UsersProfilesEntity} from "@/libs/database/entities/users-profiles.entity";
-import {PasswordsEntity} from "@/libs/database/entities/passwords.entity";
 
 @Entity("users")
 @ObjectType()
@@ -18,22 +15,13 @@ export class UsersEntity {
   id: number;
 
   @Column({
-    name: 'email',
+    name: 'did',
     type: 'varchar',
-    length: 128,
+    length: 1024,
     nullable: false,
   })
   @Field({nullable: false})
-  public email: string;
-
-  @Column({
-    name: 'address',
-    type: 'varchar',
-    length: 128,
-    nullable: true,
-  })
-  @Field({nullable: true})
-  public address: string;
+  public did: string;
 
   @Column({
     name: 'lastActivity',
@@ -42,15 +30,6 @@ export class UsersEntity {
   })
   @Field({nullable: false})
   public lastActivity: Date;
-
-  @Column({
-    name: 'nonce',
-    type: 'varchar',
-    length: 128,
-    nullable: false,
-  })
-  @Field({nullable: true})
-  public nonce: string;
 
   @Column({
     name: 'createdAt',
@@ -69,12 +48,6 @@ export class UsersEntity {
   })
   @Field({nullable: false})
   public updatedAt: Date;
-
-  @OneToOne(() => UsersProfilesEntity, profile => profile.user)
-  public profile: UsersProfilesEntity
-
-  @OneToOne(() => PasswordsEntity, password => password.user)
-  public password: PasswordsEntity;
 }
 
 export class UsersListSearchResult {

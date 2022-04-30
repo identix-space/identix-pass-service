@@ -1,0 +1,12 @@
+{
+  "did": "did:vc-scheme:6534341",
+  "key": "SCHEME_2",
+  "description": "scheme 2",
+  "scheme": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://example.com/product.schema.json",
+    "title": "Product",
+    "description": "A product in the catalog",
+    "type": "object"
+  }
+}
