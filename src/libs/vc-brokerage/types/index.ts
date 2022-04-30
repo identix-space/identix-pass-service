@@ -15,6 +15,7 @@ registerEnumType(VerificationStatuses, {
 });
 
 export type Did = string;
+
 export interface IVcSchema {
   did: Did,
   schema: string
