@@ -4,7 +4,7 @@ import {UseGuards} from "@nestjs/common";
 import {SsoAuthGuard} from "@/modules/authentication/guards/sso-auth.guard";
 import {AgentsRoles, Did, EventLogEntry, VC, VerificationStatuses} from "@/libs/vc-brokerage/types";
 
-//@UseGuards(SsoAuthGuard)
+@UseGuards(SsoAuthGuard)
 @Resolver('VCBrokerage')
 export class VcBrokerageGraphqlApiResolvers {
   constructor(
