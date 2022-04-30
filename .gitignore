@@ -7,8 +7,10 @@ dist
 .build/
 coverage
 .secrets/
+!.secrets/*.example
 files/
 !src/modules/files/
 !src/tests/e2e/files/
 tmp/
 e2e-tests-files/
+
