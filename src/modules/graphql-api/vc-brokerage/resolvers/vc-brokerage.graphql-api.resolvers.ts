@@ -1,4 +1,4 @@
-import {Args, Int, Mutation, Query, Resolver} from '@nestjs/graphql';
+import {Args, Context, Int, Mutation, Query, Resolver} from '@nestjs/graphql';
 import {VCBrokerageGraphqlApiService} from "@/modules/graphql-api/vc-brokerage/services/vc-brokerage.graphql-api.service";
 import {UseGuards} from "@nestjs/common";
 import {SsoAuthGuard} from "@/modules/authentication/guards/sso-auth.guard";
@@ -24,11 +24,12 @@ export class VcBrokerageGraphqlApiResolvers {
 
   @Query(returns => [VC])
   async getUserVCs(
+    @Context('req') req: { userDid?: string },
     @Args('role', {type: () => AgentsRoles, nullable: true}) role?: AgentsRoles,
     @Args('startIndex', {type: () => Int, nullable: true}) startIndex?: number,
     @Args('count', {type: () => Int, nullable: true}) count?: number
   ) {
-    return this.vcBrokerageGraphqlAPIService.getUserVCs(role, startIndex, count);
+    return this.vcBrokerageGraphqlAPIService.getUserVCs(req?.userDid, role, startIndex, count);
   }
 
   @Mutation(returns => Boolean)
