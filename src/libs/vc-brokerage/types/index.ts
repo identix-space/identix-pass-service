@@ -55,7 +55,7 @@ export class EventLogEntry {
 }
 
 @ObjectType()
-class VerificationCase {
+export class VerificationCase {
   @Field(type => String)
   verifierDid: Did;
 
