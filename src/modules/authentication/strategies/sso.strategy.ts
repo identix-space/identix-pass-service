@@ -11,21 +11,21 @@ interface ExtendedRequest extends Request {
 }
 @Injectable()
 export class SsoStrategy extends PassportStrategy(Strategy, 'sso') {
-  private readonly sessionDidHeaderName: string;
+  private readonly authenticationTokenHeaderName: string;
 
   constructor(private authService: AuthenticationService) {
     super();
-    this.sessionDidHeaderName = process.env.SESSION_DID_HEADER_NAME || "sessionDid";
+    this.authenticationTokenHeaderName = process.env.AUTHENTICATION_TOKEN_HEADER_NAME || "authentication";
   }
 
   async validate(request: ExtendedRequest): Promise<Did> {
     const headers = this.getHeaders(request);
 
-    if (!headers || !headers[this.sessionDidHeaderName]) {
+    if (!headers || !headers[this.authenticationTokenHeaderName]) {
       throw new UnauthorizedException();
     }
 
-    const userSessionDid = String(headers[this.sessionDidHeaderName]);
+    const userSessionDid = String(headers[this.authenticationTokenHeaderName]);
     const userDid = await this.authService.validateUserSession(userSessionDid);
 
     if (!userDid) {
