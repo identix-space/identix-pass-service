@@ -17,12 +17,13 @@ export class VCHelper {
 
   public generateVC(role: AgentsRoles, userDid: Did, vcType: VCTypes): VC {
     const vcParams = this.generateVCParams(vcType);
+
     const vcObj = {
       vcDid: this.generateRandomDid('ever:vc'),
       vcTypeDid: this.vcTypesDids.get(vcType),
       vcParams: vcParams,
       issuerDid: role === AgentsRoles.issuer ? userDid : this.generateRandomDid('ever:user'),
-      holderDid: role === AgentsRoles.issuer ? userDid : this.generateRandomDid('ever:user'),
+      holderDid: role === AgentsRoles.holder ? userDid : this.generateRandomDid('ever:user'),
       verificationCases: this.generateVerificationCases(role, userDid),
       createdAt: (new Date()).toISOString(),
       updatedAt: (new Date()).toISOString()

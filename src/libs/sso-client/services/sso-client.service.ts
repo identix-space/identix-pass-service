@@ -20,7 +20,7 @@ export class SsoClientService implements ISSOClientService{
     // const signedOtcDid = 'signed_' + otcDid;
     // const sessionTokenDid = await this.ssoService.attemptClientLogin(clientDid, signedOtcDid);
 
-    const sessionTokenDid = `did:identix-session:${faker.random.alphaNumeric(30)}`;
+    const sessionTokenDid = `did:ever:session:${faker.random.alphaNumeric(30)}`;
     return sessionTokenDid;
 
   }
@@ -37,7 +37,7 @@ export class SsoClientService implements ISSOClientService{
     }
 
     //const userDid = await this.ssoService.validateUserSession(clientSessionDid, userSessionDid);
-    const userDid = `did:identix-user:${faker.random.alphaNumeric(30)}`;
+    const userDid = `did:ever:user:${faker.random.alphaNumeric(30)}`;
 
     this.didSessionsStorage.set(userSessionDid, {did: userDid, createdAt: new Date()})
 
