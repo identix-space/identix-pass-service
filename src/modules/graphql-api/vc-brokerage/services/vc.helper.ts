@@ -11,18 +11,18 @@ export class VCHelper {
   private vcTypesDids: Map<VCTypes, string> = new Map<VCTypes, string>();
 
   constructor() {
-    this.vcTypesDids.set(VCTypes.stateId, this.generateRandomDid('vc-type:state-id'));
+    this.vcTypesDids.set(VCTypes.stateId, this.generateRandomDid('ever:schema'));
     this.vcTypesDids.set(VCTypes.proofOfResidency, this.generateRandomDid('vc-type:proof-of-residency'));
   }
 
   public generateVC(role: AgentsRoles, userDid: Did, vcType: VCTypes): VC {
     const vcParams = this.generateVCParams(vcType);
     const vcObj = {
-      vcDid: this.generateRandomDid('vc'),
+      vcDid: this.generateRandomDid('ever:vc'),
       vcTypeDid: this.vcTypesDids.get(vcType),
       vcParams: vcParams,
-      issuerDid: role === AgentsRoles.issuer ? userDid : this.generateRandomDid('user'),
-      holderDid: role === AgentsRoles.issuer ? userDid : this.generateRandomDid('user'),
+      issuerDid: role === AgentsRoles.issuer ? userDid : this.generateRandomDid('ever:user'),
+      holderDid: role === AgentsRoles.issuer ? userDid : this.generateRandomDid('ever:user'),
       verificationCases: this.generateVerificationCases(role, userDid),
       createdAt: (new Date()).toISOString(),
       updatedAt: (new Date()).toISOString()
