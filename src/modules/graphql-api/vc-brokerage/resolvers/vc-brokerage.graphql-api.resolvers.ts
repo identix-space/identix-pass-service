@@ -14,12 +14,13 @@ export class VcBrokerageGraphqlApiResolvers {
 
   @Mutation(returns => Boolean)
   async issuerVC(
+    @Context('req') req: { userDid?: string },
     @Args('holderDid', {type: () => String}) holderDid: string,
     @Args('vcTypeDid', {type: () => String}) vcTypeDid: string,
     @Args('vcParams', {type: () => String}) vcParams: string
   ): Promise<boolean>
   {
-    return this.vcBrokerageGraphqlAPIService.issuerVc(holderDid, vcTypeDid, vcParams);
+    return this.vcBrokerageGraphqlAPIService.issuerVc(req?.userDid, holderDid, vcTypeDid, vcParams);
   }
 
   @Query(returns => [VC])

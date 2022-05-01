@@ -1,16 +1,34 @@
-import {Injectable} from "@nestjs/common";
+import {Inject, Injectable} from "@nestjs/common";
 import {AgentsRoles, Did, VC} from "@/libs/vc-brokerage/types";
 import {VCHelper, VCTypes} from "@/modules/graphql-api/vc-brokerage/services/vc.helper";
+import {
+  AgentsSessionsRegistry,
+  IAgentsSessionsRegistry
+} from "@/libs/vc-brokerage/components/agents-sessions-registry/types";
 
 @Injectable()
 export class VCBrokerageGraphqlApiService {
   private vcHelper: VCHelper;
 
-  constructor() {
+  constructor(
+    @Inject(AgentsSessionsRegistry) private agentsSessionsRegistry: IAgentsSessionsRegistry
+  ) {
     this.vcHelper = new VCHelper();
   }
 
-  async issuerVc(holderDid: Did, vcTypeDid: Did, vcParams: string): Promise<boolean> {
+  async issuerVc(issuerDid: Did, holderDid: Did, vcTypeDid: Did, vcParams: string): Promise<boolean> {
+    const issuerAgent = this.agentsSessionsRegistry.getAgent(issuerDid);
+    if (!issuerAgent) {
+      throw new Error('Issuer agent session not found');
+    }
+
+    const holderAgent = this.agentsSessionsRegistry.getAgent(holderDid);
+    if (!holderAgent) {
+      await this.agentsSessionsRegistry.createAgentSession(holderDid);
+    }
+
+    await issuerAgent.issuerVc(issuerDid, holderDid, vcTypeDid, vcParams);
+
     return true;
   }
 

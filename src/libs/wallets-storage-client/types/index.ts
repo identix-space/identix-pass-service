@@ -9,7 +9,7 @@ export const WalletsStorageClient = 'WALLETS_STORAGE_CLIENT';
 
 export interface IWalletsStorageClient {
   getOrCreateAccount: (params: KeyValueType) => Promise<Did[]>;
-  createVC: (did: string, vcData: VCData) => Promise<string>;
+  createVC: (vcDid: Did, issuerDid: Did, holderDid: Did, vcData: string) => Promise<void>;
   readVC: (did: string) => Promise<VCData>;
   updateVC: (did: string, vcData: VCData) => Promise<void>;
   deleteVC: (did: string) => Promise<void>;
@@ -17,4 +17,5 @@ export interface IWalletsStorageClient {
 
 export type WalletsStorageConfiguration = {
   walletsStorageUrl: string;
+  walletsApiToken: string;
 }

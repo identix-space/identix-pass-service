@@ -11,8 +11,8 @@ export class WalletsStorageService {
         return this.walletsStorageClient.getOrCreateAccount(params);
     }
 
-    public async  createVC(did: string, vcData: VCData): Promise<string> {
-        return this.walletsStorageClient.createVC(did, vcData);
+    public async  createVC(vcDid: Did, issuerDid: Did, holderDid: Did, vcData: string): Promise<void> {
+        return this.walletsStorageClient.createVC(vcDid, issuerDid, holderDid, vcData);
     }
 
     public async readVC(did: string): Promise<VCData> {

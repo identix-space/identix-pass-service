@@ -18,10 +18,10 @@ function walletsStorageClientFactory(
   config: ConfigService
 ): IWalletsStorageClient {
   const walletsStorageConfig = config.get<WalletsStorageConfiguration>('wallets-storage-configuration');
-  if (!walletsStorageConfig || !walletsStorageConfig.walletsStorageUrl) {
+  if (!walletsStorageConfig || !walletsStorageConfig.walletsStorageUrl || !walletsStorageConfig.walletsApiToken) {
     throw new Error(`Wallets storage configuration is invalid!`);
   }
 
-  const walletsStorageClient = new IdentixWalletsStorageClient(walletsStorageConfig.walletsStorageUrl);
+  const walletsStorageClient = new IdentixWalletsStorageClient(walletsStorageConfig);
   return new WalletsStorageService(walletsStorageClient);
 }
