@@ -7,11 +7,18 @@ export enum VCTypes {
 }
 
 export class VCHelper {
+  private vcTypesDids: Map<VCTypes, string> = new Map<VCTypes, string>();
+
+  constructor() {
+    this.vcTypesDids.set(VCTypes.stateId, this.generateRandomDid('vc-type:state-id'));
+    this.vcTypesDids.set(VCTypes.proofOfResidency, this.generateRandomDid('vc-type:proof-of-residency'));
+  }
+
   public generateVC(role: AgentsRoles, userDid: Did, vcType: VCTypes): VC {
     const vcParams = this.generateVCParams(vcType);
     const vc = {
       vcDid: this.generateRandomDid('vc'),
-      vcTypeDid: this.generateRandomDid('vc-type'),
+      vcTypeDid: this.vcTypesDids.get(vcType),
       vcParams: vcParams,
       issuerDid: role === AgentsRoles.issuer ? userDid : this.generateRandomDid('user'),
       holderDid: role === AgentsRoles.issuer ? userDid : this.generateRandomDid('user'),
