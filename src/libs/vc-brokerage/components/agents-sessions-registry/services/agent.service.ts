@@ -1,7 +1,7 @@
 import {IMessagingClient} from "@/libs/messaging/types";
 import {IVcBroker} from "@/libs/vc-brokerage/components/vc-brokers/types";
 import {IVcScheme, IVcSchemesClient} from "@/libs/vc-brokerage/components/vc-schemes/types";
-import {IWalletsStorageClient} from "@/libs/wallets-storage-client/types";
+import {IWalletsStorageClient, WalletsVCData} from "@/libs/wallets-storage-client/types";
 import {Did, VC} from "@/libs/vc-brokerage/types";
 
 export class AgentService {
@@ -22,5 +22,13 @@ export class AgentService {
      await this.walletsStorageClient.createVC(vcData.vcDid, issuerDid, holderDid, JSON.stringify(vcData));
 
      return vcData.vcDid;
+  }
+
+  async getUserVCs(userDid: Did): Promise<WalletsVCData[]> {
+    return this.walletsStorageClient.getUserVCs(userDid);
+  }
+
+  async getVC(vcDid: Did): Promise<WalletsVCData> {
+    return this.walletsStorageClient.getVC(vcDid);
   }
 }
