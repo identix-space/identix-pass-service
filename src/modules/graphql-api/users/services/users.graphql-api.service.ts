@@ -1,18 +1,17 @@
-import {Injectable} from "@nestjs/common";
-import {InjectRepository} from "@nestjs/typeorm";
-import {Repository} from "typeorm";
-
-import {UsersEntity} from "@/libs/database/entities";
+import {Inject, Injectable} from "@nestjs/common";
 import {Did} from "@/libs/vc-brokerage/types";
+import {
+  AgentsSessionsRegistry,
+  IAgentsSessionsRegistry
+} from "@/libs/vc-brokerage/components/agents-sessions-registry/types";
 
 @Injectable()
 export class UsersGraphqlApiService {
   constructor(
-    @InjectRepository(UsersEntity)
-    private usersRepository: Repository<UsersEntity>
+    @Inject(AgentsSessionsRegistry) private agentsSessionsRegistry: IAgentsSessionsRegistry
   ) {}
 
   async checkAccountExists(did: Did): Promise<boolean> {
-    return true;
+    return !!this.agentsSessionsRegistry.getAgent(did);
   }
 }
