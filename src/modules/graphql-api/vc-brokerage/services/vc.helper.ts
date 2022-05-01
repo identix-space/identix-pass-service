@@ -36,8 +36,9 @@ export class VCHelper {
     vc.verificationCases = vcObj.verificationCases;
     vc.createdAt = vcObj.createdAt;
     vc.updatedAt = vcObj.updatedAt;
-    vc.vcParams = JSON.stringify(vcParams);
+
     vc.vcRawText = this.generateVCRawText(vc);
+    vc.vcParams = JSON.stringify(vcParams);
 
     return vc;
   }
