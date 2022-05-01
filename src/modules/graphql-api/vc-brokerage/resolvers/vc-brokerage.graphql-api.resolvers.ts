@@ -32,6 +32,14 @@ export class VcBrokerageGraphqlApiResolvers {
     return this.vcBrokerageGraphqlAPIService.getUserVCs(req?.userDid, role, startIndex, count);
   }
 
+  @Query(returns => VC)
+  async getVC(
+    @Context('req') req: { userDid?: string },
+    @Args('vcDid', {type: () => String}) vcDid: string
+  ) {
+    return this.vcBrokerageGraphqlAPIService.getVC(req?.userDid, vcDid);
+  }
+
   @Mutation(returns => Boolean)
   async requestVcVerification(
     @Args('verifierDid', {type: () => String}) verifierDid: Did,
