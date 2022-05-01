@@ -9,17 +9,20 @@ export enum VCTypes {
 export class VCHelper {
   public generateVC(role: AgentsRoles, userDid: Did, vcType: VCTypes): VC {
     const vcParams = this.generateVCParams(vcType);
-    return {
+    const vc = {
       vcDid: this.generateRandomDid('vc'),
       vcTypeDid: this.generateRandomDid('vc-type'),
       vcParams: vcParams,
-      vcRawText: this.generateVCRawText(vcType, vcParams),
       issuerDid: role === AgentsRoles.issuer ? userDid : this.generateRandomDid('user'),
       holderDid: role === AgentsRoles.issuer ? userDid : this.generateRandomDid('user'),
       verificationCases: this.generateVerificationCases(role, userDid),
-      createdAt: new Date(),
-      updatedAt: new Date()
+      createdAt: (new Date()).toISOString(),
+      updatedAt: (new Date()).toISOString()
     } as VC;
+
+    vc.vcRawText = this.generateVCRawText(vc);
+
+    return vc;
   }
 
   private generateRandomDid(description: string): Did {
@@ -33,10 +36,10 @@ export class VCHelper {
         name: faker.name.firstName(),
         lastName: faker.name.lastName(),
         citizenship: faker.address.country(),
-        dateOfBirth: (new Date(faker.date.past(faker.random.number({min: 10, max: 50})))).toISOString(),
+        dateOfBirth: this.shortISODataFormat(new Date(faker.date.past(faker.random.number({min: 10, max: 50})))),
         id: `${faker.random.alphaNumeric(4).toUpperCase()} ${faker.random.alphaNumeric(8).toUpperCase()}`,
-        dateOfIssuance: (new Date(faker.date.recent(faker.random.number({min: 10, max: 50})))).toISOString(),
-        dateOfExpire: (new Date(faker.date.future(faker.random.number({min: 1, max: 3})))).toISOString()
+        dateOfIssuance: this.shortISODataFormat(new Date(faker.date.recent(faker.random.number({min: 10, max: 50})))),
+        dateOfExpire: this.shortISODataFormat(new Date(faker.date.future(faker.random.number({min: 1, max: 3}))))
       }
     } else { //  if (vcType === VCTypes.proofOfResidency)
       vcParams = {
@@ -50,8 +53,8 @@ export class VCHelper {
     return JSON.stringify(vcParams);
   }
 
-  private generateVCRawText(vcType: VCTypes, vcParams: string): string {
-    return vcParams;
+  private generateVCRawText(vcObject: VC): string {
+    return JSON.stringify(vcObject);
   }
 
   private generateVerificationCases(role: AgentsRoles, userDid: Did): VerificationCase[] {
@@ -74,5 +77,9 @@ export class VCHelper {
     }
 
     return verificationCases;
+  }
+
+  private shortISODataFormat(date: Date): string {
+    return date.toISOString().split('T').shift();
   }
 }
