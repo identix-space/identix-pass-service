@@ -39,8 +39,8 @@ async function  ssoClientFactory(
     throw new Error(`SSO Client configuration is invalid!`);
   }
 
-  // ssoClientService.init(new SsoService(ssoClientConfig.ssoGraphqlApiUrl));
-  ssoClientService.init(mockSsoService);
+  ssoClientService.init(new SsoService(ssoClientConfig.ssoGraphqlApiUrl));
+  // ssoClientService.init(mockSsoService);
 
   const  fullClientDifPath = `${process.cwd()}/${ssoClientConfig.pathToClientDid}`;
   if (!existsSync(fullClientDifPath)) {

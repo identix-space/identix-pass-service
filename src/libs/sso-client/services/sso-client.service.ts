@@ -49,8 +49,6 @@ export class SsoClientService implements ISSOClientService{
       throw new UnauthorizedException();
     }
 
-    //const userDid = `did:ever:user:${faker.random.alphaNumeric(30)}`;
-
     this.didSessionsStorage.set(userSessionDid, {did: userDid, createdAt: new Date()})
 
     return userDid;
