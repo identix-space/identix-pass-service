@@ -12,7 +12,7 @@ export class VCHelper {
 
   constructor() {
     this.vcTypesDids.set(VCTypes.stateId, this.generateRandomDid('ever:schema'));
-    this.vcTypesDids.set(VCTypes.proofOfResidency, this.generateRandomDid('vc-type:proof-of-residency'));
+    this.vcTypesDids.set(VCTypes.proofOfResidency, this.generateRandomDid('ever:schema'));
   }
 
   public generateVC(role: AgentsRoles, userDid: Did, vcType: VCTypes): VC {
@@ -81,8 +81,13 @@ export class VCHelper {
       VerificationStatuses.approved,
       VerificationStatuses.pendingApproval
     ];
+    const randomLengthArray =
+      Array(Math.floor(Math.random() * 3)+1)
+        .map((item, index) => {
+          return index;
+        });
 
-    const verificationCases = [1, 2, 3].map(() => ({
+    const verificationCases = randomLengthArray.map(() => ({
       verifierDid: this.generateRandomDid('user'),
       status: verificationStatuses[faker.random.number({min: 0, max: 2})]
     }));
