@@ -1,12 +1,15 @@
-import {Injectable} from "@nestjs/common";
 import { IWalletsStorageClient } from "@/libs/wallets-storage-client/types";
-import { VCData } from "@/libs/vc-brokerage/types";
+import { VCData, Did } from "@/libs/vc-brokerage/types";
+import { KeyValueType } from "@/libs/common/types";
 
-@Injectable()
 export class BaseStorageWalletsClient implements IWalletsStorageClient {
   constructor() {}
 
-  public async  createVC(did: string, vcData: VCData): Promise<string> {
+  public async getOrCreateAccount(params: KeyValueType): Promise<Did[]> {
+    return;
+  }
+
+  public async createVC(did: string, vcData: VCData): Promise<string> {
     return;
   }
 

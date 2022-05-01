@@ -4428,10 +4428,10 @@ iconv-lite@0.6.3, iconv-lite@^0.6.2:
   dependencies:
     safer-buffer ">= 2.1.2 < 3.0.0"
 
-identix-sso-client-js@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/identix-sso-client-js/-/identix-sso-client-js-1.0.4.tgz#ee1023c0f26398898f770a9390be5b7d0f9860ce"
-  integrity sha512-Vj2JmTZvXyi1vOEGdzrQ7HuLWBMq2jRVxtNzHP5MzIJ/ZCKHyS9RELtbtnIORNmHCuxNhFrpon7aP8ClEX75tw==
+identix-sso-client-js@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/identix-sso-client-js/-/identix-sso-client-js-1.0.6.tgz#45fcad0d4517aee20a961921d5f5bc3593ce714c"
+  integrity sha512-v3KzMf00DZXFavGjR4ZJUB4VuNlCuGbN7+RwZfOU83I2VbPSEHZ8LrmgtyJMAUf1K5PRQvwuwHiBwGZh3t21rA==
   dependencies:
     graphql-request "^4.2.0"
     typescript "^4.6.3"
