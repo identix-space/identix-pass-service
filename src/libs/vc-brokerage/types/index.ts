@@ -84,10 +84,10 @@ export class VC {
   holderDid: Did;
 
   @Field(type => String)
-  createdAt: Date;
+  createdAt: string;
 
   @Field(type => String)
-  updatedAt: Date;
+  updatedAt: string;
 
   @Field(type => [VerificationCase])
   verificationCases: Array<{
