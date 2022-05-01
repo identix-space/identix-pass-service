@@ -1,15 +1,19 @@
-import {Injectable} from "@nestjs/common";
 import {IWalletsStorageClient} from "@/libs/wallets-storage-client/types";
-import {VCData} from "@/libs/vc-brokerage/types";
+import {Did, VCData} from "@/libs/vc-brokerage/types";
 import {BaseStorageWalletsClient} from "@/libs/wallets-storage-client/clients/base-storage-wallets.client";
+import {KeyValueType} from "@/libs/common/types";
+import {faker} from "@faker-js/faker";
 
-@Injectable()
 export class IdentixWalletsStorageClient extends BaseStorageWalletsClient implements IWalletsStorageClient {
   private readonly walletsStorageUrl: string;
 
   constructor(walletsStorageUrl: string) {
     super();
     this.walletsStorageUrl = walletsStorageUrl;
+  }
+
+  public async getOrCreateAccount(params: KeyValueType): Promise<Did[]> {
+    return [`did:ever:user:${faker.random.alphaNumeric(30)}`];
   }
 
   public async createVC(did: string, vcData: VCData): Promise<string> {

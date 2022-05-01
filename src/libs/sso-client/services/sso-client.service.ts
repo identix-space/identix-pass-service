@@ -1,17 +1,17 @@
-import {Injectable} from "@nestjs/common";
+import {Injectable, UnauthorizedException} from "@nestjs/common";
 import {ISSOClientService, ISsoNpmService} from "@/libs/sso-client/types";
+import {ISsoService} from "identix-sso-client-js/src/ISsoService";
 import {Did} from "@/libs/vc-brokerage/types";
-import {SsoService} from "identix-sso-client-js";
 import {faker} from "@faker-js/faker";
 
 @Injectable()
 export class SsoClientService implements ISSOClientService{
-  private ssoService: SsoService;
+  private ssoService: ISsoService;
   private didSessionsStorage: Map<Did, {did: Did, createdAt: Date}>
     = new Map<Did, {did: Did, createdAt: Date}>();
   private expiringDurationInSec: number = 24 * 3600; //24 hours
 
-  init(ssoService: SsoService): void {
+  init(ssoService: ISsoService): void {
     this.ssoService = ssoService;
   }
 
@@ -36,8 +36,20 @@ export class SsoClientService implements ISSOClientService{
       this.didSessionsStorage.delete(userSessionDid);
     }
 
-    //const userDid = await this.ssoService.validateUserSession(clientSessionDid, userSessionDid);
-    const userDid = `did:ever:user:${faker.random.alphaNumeric(30)}`;
+    let userDid;
+    try {
+      await this.ssoService.validateUserSession(clientSessionDid, userSessionDid);
+      const userInfo = await this.ssoService.getCurrentUserInfo(clientSessionDid, userSessionDid);
+      userDid = userInfo?.did;
+    } catch (e) {
+      throw new UnauthorizedException();
+    }
+
+    if (!userDid) {
+      throw new UnauthorizedException();
+    }
+
+    //const userDid = `did:ever:user:${faker.random.alphaNumeric(30)}`;
 
     this.didSessionsStorage.set(userSessionDid, {did: userDid, createdAt: new Date()})
 
