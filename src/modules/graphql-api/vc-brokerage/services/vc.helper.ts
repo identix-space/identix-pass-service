@@ -81,11 +81,14 @@ export class VCHelper {
       VerificationStatuses.approved,
       VerificationStatuses.pendingApproval
     ];
-    const randomLengthArray =
-      Array(Math.floor(Math.random() * 3)+1)
-        .map((item, index) => {
-          return index;
-        });
+
+    const randomLengthArray = [];
+    let index = 0;
+    const arrayLength = Math.floor(Math.random() * 3) + 1;
+    while (index < arrayLength) {
+      randomLengthArray.push(index);
+      index++;
+    }
 
     const verificationCases = randomLengthArray.map(() => ({
       verifierDid: this.generateRandomDid('user'),
