@@ -1,5 +1,6 @@
 import {AgentsRoles, Did, VC, VerificationCase, VerificationStatuses} from "@/libs/vc-brokerage/types";
 import {faker} from "@faker-js/faker";
+import {KeyValueType} from "@/libs/common/types";
 
 export enum VCTypes {
   stateId = 'stateId',
@@ -16,7 +17,7 @@ export class VCHelper {
 
   public generateVC(role: AgentsRoles, userDid: Did, vcType: VCTypes): VC {
     const vcParams = this.generateVCParams(vcType);
-    const vc = {
+    const vcObj = {
       vcDid: this.generateRandomDid('vc'),
       vcTypeDid: this.vcTypesDids.get(vcType),
       vcParams: vcParams,
@@ -25,8 +26,17 @@ export class VCHelper {
       verificationCases: this.generateVerificationCases(role, userDid),
       createdAt: (new Date()).toISOString(),
       updatedAt: (new Date()).toISOString()
-    } as VC;
+    };
 
+    const vc = {} as VC;
+    vc.vcDid = vcObj.vcDid;
+    vc.vcTypeDid = vcObj.vcTypeDid;
+    vc.issuerDid = vcObj.issuerDid;
+    vc.holderDid = vcObj.holderDid;
+    vc.verificationCases = vcObj.verificationCases;
+    vc.createdAt = vcObj.createdAt;
+    vc.updatedAt = vcObj.updatedAt;
+    vc.vcParams = JSON.stringify(vcParams);
     vc.vcRawText = this.generateVCRawText(vc);
 
     return vc;
@@ -36,7 +46,7 @@ export class VCHelper {
     return `did:${description}:${faker.random.alphaNumeric(30)}`;
   }
 
-  private generateVCParams(vcType: VCTypes): string {
+  private generateVCParams(vcType: VCTypes): KeyValueType {
     let vcParams
     if (vcType === VCTypes.stateId) {
       vcParams = {
@@ -57,10 +67,10 @@ export class VCHelper {
         house: faker.random.number({min: 1, max: 100})
       }
     }
-    return JSON.stringify(vcParams);
+    return vcParams;
   }
 
-  private generateVCRawText(vcObject: VC): string {
+  private generateVCRawText(vcObject: KeyValueType): string {
     return JSON.stringify(vcObject);
   }
 
