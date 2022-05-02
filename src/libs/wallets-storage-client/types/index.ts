@@ -1,20 +1,32 @@
-import {Did, VCData} from "@/libs/vc-brokerage/types";
+import {Did, VC, VCData} from "@/libs/vc-brokerage/types";
 import {KeyValueType} from "@/libs/common/types";
+import {VcVerificationStatusType} from "../../../../../identix-wallets/src/libs/database/types/vc-status.type";
 
 export enum WalletsStorageKinds {
-  identixWalletsStorage = 'IDENTIX_STORAGE_WALLETS',
+  identixWalletsStorage = 'IDENTIX_WALLETS_STORAGE',
 }
 
 export const WalletsStorageClient = 'WALLETS_STORAGE_CLIENT';
 
 export interface IWalletsStorageClient {
   getOrCreateAccount: (params: KeyValueType) => Promise<Did[]>;
-  createVC: (did: string, vcData: VCData) => Promise<string>;
-  readVC: (did: string) => Promise<VCData>;
-  updateVC: (did: string, vcData: VCData) => Promise<void>;
-  deleteVC: (did: string) => Promise<void>;
+  createVC: (vcDid: Did, issuerDid: Did, holderDid: Did, vcData: string) => Promise<void>;
+  getUserVCs: (userDid: Did) =>  Promise<WalletsVCData[]>;
+  getVC: (vcDid: Did) => Promise<WalletsVCData>;
 }
 
 export type WalletsStorageConfiguration = {
   walletsStorageUrl: string;
+  walletsApiToken: string;
+}
+
+export interface WalletsVCData {
+  vcDid: Did,
+  vcData: Did,
+  issuerDid: Did,
+  holderDid: string,
+  verificationCases: {
+    verifierDid: Did,
+    verificationStatus: VcVerificationStatusType
+  }[]
 }
