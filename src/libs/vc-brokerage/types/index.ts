@@ -1,4 +1,4 @@
-import {Field, ObjectType, registerEnumType} from "@nestjs/graphql";
+import {Field, ObjectType, registerEnumType, ArgsType} from "@nestjs/graphql";
 
 export interface VCData {
   [key: string]: string | number | boolean | VCData | VCData[] | null;

@@ -14,4 +14,8 @@ export class UsersGraphqlApiService {
   async checkAccountExists(did: Did): Promise<boolean> {
     return !!this.agentsSessionsRegistry.getAgent(did);
   }
+
+  async getAllAccounts(): Promise<Did[]> {
+    return this.agentsSessionsRegistry.getAllAgentsSessionsDids();
+  }
 }

@@ -15,4 +15,5 @@ export interface IAgentsSessionsRegistry {
   createAgentSession: (userDid: Did) => void;
   deleteAgentSession: (userDid: Did) => void;
   getAgent: (userDid: Did) => AgentService;
+  getAllAgentsSessionsDids: () =>  Did[]
 }
