@@ -1,6 +1,6 @@
 import { gql, GraphQLClient } from 'graphql-request'
 import {IWalletsStorageClient, WalletsVCData} from "@/libs/wallets-storage-client/types";
-import {Did, VC, VCData} from "@/libs/vc-brokerage/types";
+import {Did, VerificationStatuses} from "@/libs/vc-brokerage/types";
 import {BaseStorageWalletsClient} from "@/libs/wallets-storage-client/clients/base-storage-wallets.client";
 import {KeyValueType} from "@/libs/common/types";
 import {faker} from "@faker-js/faker";
@@ -78,5 +78,43 @@ export class IdentixWalletsStorageClient extends BaseStorageWalletsClient implem
 
     const {getVC: vc} = await this.graphQLClient.request(query, { vcDid });
     return vc;
+  }
+
+  async requestVcVerification(vcDid: Did, verifierDid: Did): Promise<boolean> {
+    const query = gql`
+      mutation requestVcVerification(
+          $vcDid: String!
+          $verifierDid: String!
+        ) {  
+           requestVcVerification(
+             vcDid: $vcDid,
+             verifierDid: $verifierDid
+          ) 
+        }      
+    `;
+
+    await this.graphQLClient.request(query, {vcDid, verifierDid});
+
+    return true;
+  }
+
+  async verifyVC(vcDid: Did, verifierDid: Did, verificationStatus: VerificationStatuses): Promise<boolean> {
+    const query = gql`
+      mutation verifyVc(
+          $vcDid: String!
+          $verifierDid: String!
+          $verificationStatus: String!
+        ) {  
+           verifyVc(
+             vcDid: $vcDid,
+             verifierDid: $verifierDid,
+             verificationStatus: $verificationStatus
+          ) 
+        }      
+    `;
+
+    await this.graphQLClient.request(query, {vcDid, verifierDid, verificationStatus});
+
+    return true;
   }
 }
