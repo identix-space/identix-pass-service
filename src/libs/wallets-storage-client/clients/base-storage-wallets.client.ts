@@ -1,5 +1,5 @@
 import {IWalletsStorageClient, WalletsVCData} from "@/libs/wallets-storage-client/types";
-import {VCData, Did, VC} from "@/libs/vc-brokerage/types";
+import {Did, VerificationStatuses} from "@/libs/vc-brokerage/types";
 import { KeyValueType } from "@/libs/common/types";
 
 export class BaseStorageWalletsClient implements IWalletsStorageClient {
@@ -19,5 +19,13 @@ export class BaseStorageWalletsClient implements IWalletsStorageClient {
 
   public async getVC(vcDid: Did): Promise<WalletsVCData> {
     return;
+  }
+
+  async requestVcVerification(vcDid: Did, verifierDid: Did): Promise<boolean> {
+    return true
+  }
+
+  async verifyVC(vcDid: Did, verifierDid: Did, verificationStatus: VerificationStatuses): Promise<boolean> {
+    return true
   }
 }

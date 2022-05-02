@@ -49,19 +49,21 @@ export class VcBrokerageGraphqlApiResolvers {
 
   @Mutation(returns => Boolean)
   async requestVcVerification(
-    @Args('verifierDid', {type: () => String}) verifierDid: Did,
-    @Args('vcDid', {type: () => String}) vcDid: Did): Promise<boolean>
+    @Context('req') req: { userDid?: string },
+    @Args('vcDid', {type: () => String}) vcDid: Did,
+    @Args('verifierDid', {type: () => String}) verifierDid: Did): Promise<boolean>
   {
-    return true;
+    return this.vcBrokerageGraphqlAPIService.requestVcVerification(req?.userDid, vcDid, verifierDid);
   }
 
   @Mutation(returns => Boolean)
   async verifyVC(
+    @Context('req') req: { userDid?: string },
     @Args('vcDid', {type: () => String}) vcDid: Did,
     @Args('verificationStatus',
-      {type: () => VerificationStatuses}) verificationStatus: VerificationStatuses): Promise<boolean>
+      {type: () => String}) verificationStatus: VerificationStatuses): Promise<boolean>
   {
-    return true;
+    return this.vcBrokerageGraphqlAPIService.verifyVc(req?.userDid, vcDid, verificationStatus);
   }
 
   @Query(returns => [EventLogEntry])

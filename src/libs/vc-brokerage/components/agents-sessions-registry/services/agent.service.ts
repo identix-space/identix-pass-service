@@ -2,7 +2,7 @@ import {IMessagingClient} from "@/libs/messaging/types";
 import {IVcBroker} from "@/libs/vc-brokerage/components/vc-brokers/types";
 import {IVcScheme, IVcSchemesClient} from "@/libs/vc-brokerage/components/vc-schemes/types";
 import {IWalletsStorageClient, WalletsVCData} from "@/libs/wallets-storage-client/types";
-import {Did, VC} from "@/libs/vc-brokerage/types";
+import {Did, VC, VerificationStatuses} from "@/libs/vc-brokerage/types";
 
 export class AgentService {
   constructor(
@@ -34,5 +34,13 @@ export class AgentService {
 
   async getVC(vcDid: Did): Promise<WalletsVCData> {
     return this.walletsStorageClient.getVC(vcDid);
+  }
+
+  async requestVcVerification(vcDid: Did, verifierDid: Did): Promise<boolean> {
+    return this.walletsStorageClient.requestVcVerification(vcDid, verifierDid);
+  }
+
+  async verifyVc(vcDid: Did, verifierDid: Did, verificationStatus: VerificationStatuses): Promise<boolean> {
+    return this.walletsStorageClient.verifyVC(vcDid, verifierDid, verificationStatus);
   }
 }
