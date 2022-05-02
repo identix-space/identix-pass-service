@@ -3,6 +3,7 @@ import {VCBrokerageGraphqlApiService} from "@/modules/graphql-api/vc-brokerage/s
 import {UseGuards} from "@nestjs/common";
 import {SsoAuthGuard} from "@/modules/authentication/guards/sso-auth.guard";
 import {AgentsRoles, Did, EventLogEntry, VC, VerificationStatuses} from "@/libs/vc-brokerage/types";
+import {VcTypeInfo} from "../types";
 
 @UseGuards(SsoAuthGuard)
 @Resolver('VCBrokerage')
@@ -10,6 +11,11 @@ export class VcBrokerageGraphqlApiResolvers {
   constructor(
     private vcBrokerageGraphqlAPIService: VCBrokerageGraphqlApiService,
   ) {
+  }
+
+  @Query(returns => [VcTypeInfo])
+  async getVcTypes(@Context('req') req: { userDid?: string }) {
+    return this.vcBrokerageGraphqlAPIService.getVcTypes(req?.userDid);
   }
 
   @Mutation(returns => Boolean)

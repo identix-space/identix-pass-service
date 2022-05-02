@@ -17,6 +17,20 @@ export class VCBrokerageGraphqlApiService {
     this.vcHelper = new VCHelper();
   }
 
+  async getVcTypes(userDid: Did): Promise<{vcTypeDid: Did, vcTypeTag: string}[]> {
+    const userAgent = this.agentsSessionsRegistry.getAgent(userDid);
+    if (!userAgent) {
+      throw new Error('Issuer agent session not found');
+    }
+
+    const vcTypeSchemes = await userAgent.getVcTypeSchemes(userDid);
+    if (!Array.isArray(vcTypeSchemes)) {
+      return [];
+    }
+
+    return vcTypeSchemes.map(sch => ({vcTypeDid: sch.did, vcTypeTag: sch.key}));
+  }
+
   async issuerVc(issuerDid: Did, holderDid: Did, vcTypeDid: Did, vcParams: string): Promise<boolean> {
     const issuerAgent = this.agentsSessionsRegistry.getAgent(issuerDid);
     if (!issuerAgent) {

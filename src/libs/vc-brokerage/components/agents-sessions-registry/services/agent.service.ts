@@ -12,8 +12,12 @@ export class AgentService {
     private walletsStorageClient: IWalletsStorageClient
   ) {}
 
+  async getVcTypeSchemes(userDid: Did): Promise<IVcScheme[]> {
+    return this.vcSchemes.getSchemes({ userDid });
+  }
+
   async issuerVc(issuerDid: Did, holderDid: Did, vcTypeDid: Did, vcParams: string): Promise<Did> {
-     const vcTypeScheme: IVcScheme = this.vcSchemes.getSchemes({ did: vcTypeDid }).shift();
+     const vcTypeScheme: IVcScheme = this.vcSchemes.getSchemes({ vcTypeDid }).shift();
      if (!vcTypeScheme) {
        throw new Error(`Unknown vcType scheme. Params: ${JSON.stringify({vcTypeDid})}`);
      }

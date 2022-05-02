@@ -8,14 +8,14 @@ export class VcSchemesClientService implements IVcSchemesClient {
   }
 
   getSchemes(params?: IVcSearchParams|undefined): IVcScheme[] {
-    const {did, key} = params || {};
+    const {vcTypeDid, key} = params || {};
 
-    if (did && key) {
-      return Array.from(this.vcSchemesStorage).filter(scheme => scheme.did === did && scheme.key === key);
+    if (vcTypeDid && key) {
+      return Array.from(this.vcSchemesStorage).filter(scheme => scheme.did === vcTypeDid && scheme.key === key);
     }
 
-    if (did) {
-      return Array.from(this.vcSchemesStorage).filter(scheme => scheme.did === did);
+    if (vcTypeDid) {
+      return Array.from(this.vcSchemesStorage).filter(scheme => scheme.did === vcTypeDid);
     }
 
     if (key) {

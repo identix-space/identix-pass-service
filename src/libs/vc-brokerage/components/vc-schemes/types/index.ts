@@ -14,7 +14,8 @@ export interface IVcScheme {
 }
 
 export interface IVcSearchParams {
-  did?: Did,
+  userDid?: Did,
+  vcTypeDid?: Did,
   key?: string
 }
 

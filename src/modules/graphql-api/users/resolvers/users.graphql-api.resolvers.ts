@@ -14,6 +14,11 @@ export class UsersGraphqlApiResolvers {
   constructor(private usersService: UsersGraphqlApiService) {
   }
 
+  @Query(returns => [String])
+  async getAllAccounts() {
+    return this.usersService.getAllAccounts();
+  }
+
   @Query(returns => Boolean)
   async checkAccountExists(
     @Args('did', {type: () => String}) did: Did
