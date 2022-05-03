@@ -64,6 +64,7 @@ export class SimpleBrokerService implements IVcBroker{
     vcRawTextObj.payload.nbf = String((new Date()).getTime());
     vcRawTextObj.payload.iat = String((new Date()).getTime());
     vcRawTextObj.payload.jti = vc.vcDid;
+    vcRawTextObj.payload.vc.id = vc.vcDid;
     vcRawTextObj.payload.vc.credentialSubject = await this.generateSubjectState(vc, vcParamsObj, vcSecret);
     vcRawTextObj.jwt = await this.generateJWT(vcRawTextObj.header, vcRawTextObj.payload, vc.issuerDid);
 
