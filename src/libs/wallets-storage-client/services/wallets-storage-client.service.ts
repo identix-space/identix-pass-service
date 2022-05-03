@@ -2,6 +2,7 @@ import {Did, VerificationStatuses} from "@/libs/vc-brokerage/types";
 import { KeyValueType} from "@/libs/common/types";
 import { IdentixWalletsStorageClient } from "@/libs/wallets-storage-client/clients/identix-wallets.client";
 import {WalletsVCData} from "@/libs/wallets-storage-client/types";
+import {faker} from "@faker-js/faker";
 
 export class WalletsStorageService {
   constructor(
@@ -30,5 +31,18 @@ export class WalletsStorageService {
 
   async verifyVC(vcDid: Did, verifierDid: Did, verificationStatus: VerificationStatuses): Promise<boolean> {
     return this.walletsStorageClient.verifyVC(vcDid, verifierDid, verificationStatus)
+  }
+
+  async generateVcDid(): Promise<{vcDid: Did, vcSecret: string}> {
+    //return this.walletsStorageClient.generateVcDid();
+    return {
+      vcDid: `did:ever:vc:${faker.random.alphaNumeric(30)}`,
+      vcSecret: faker.random.alphaNumeric(30)
+    }
+  }
+
+  async sign(userDid: Did, msg: string): Promise<string> {
+    //return this.walletsStorageClient.sign(userDid, msg);
+    return faker.random.alphaNumeric(50);
   }
 }

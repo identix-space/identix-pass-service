@@ -117,4 +117,12 @@ export class IdentixWalletsStorageClient extends BaseStorageWalletsClient implem
 
     return true;
   }
+
+  async generateVcDid(): Promise<{vcDid: Did, vcSecret: string}> {
+    return;
+  }
+
+  async sign(userDid: Did, msg: string): Promise<string> {
+    return;
+  }
 }
