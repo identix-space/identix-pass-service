@@ -28,4 +28,12 @@ export class BaseStorageWalletsClient implements IWalletsStorageClient {
   async verifyVC(vcDid: Did, verifierDid: Did, verificationStatus: VerificationStatuses): Promise<boolean> {
     return true
   }
+
+  async generateVcDid(): Promise<{vcDid: Did, vcSecret: string}> {
+    return;
+  }
+
+  async sign(userDid: Did, msg: string): Promise<string> {
+    return;
+  }
 }
