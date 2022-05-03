@@ -58,7 +58,13 @@ export class VCBrokerageGraphqlApiService {
       throw new Error('User agent session not found');
     }
 
-    return (await userAgent.getUserVCs(userDid)).map(wvc => JSON.parse(wvc.vcData));
+    const userVCs = (await userAgent.getUserVCs(userDid)).map(wvc => JSON.parse(wvc.vcData));
+
+    if (role) {
+      return userVCs.filter(vc => this.checkUserHasRoleInVC(vc, userDid, role));
+    }
+
+    return userVCs;
   }
 
   async requestVcVerification(userDid: Did, vcDid: Did, verifierDid: Did): Promise<boolean> {
@@ -100,27 +106,35 @@ export class VCBrokerageGraphqlApiService {
       throw new Error(`VC not fount. Params: ${JSON.stringify({vcDid})}`)
     }
 
+    if (!this.checkUserHasRoleInVC(vc, userDid, userRoleShouldBe)) {
+      throw new ForbiddenException();
+    }
+
+    return vc;
+  }
+
+  private checkUserHasRoleInVC(vc: WalletsVCData, userDid: Did, role?: AgentsRoles): boolean {
     const checkUserAsIssuer = vc.issuerDid === userDid;
     const checkUserAsHolder = vc.holderDid === userDid;
     const checkUserAsVerifier = Array.isArray(vc.verificationCases) &&
       vc.verificationCases.filter(vcc => vcc.verifierDid === userDid).length > 0;
 
-    if (!userRoleShouldBe) {
+    if (!role) {
       if (!checkUserAsIssuer && !checkUserAsHolder && !checkUserAsVerifier) {
-        throw new ForbiddenException();
+        return false;
       }
     } else {
-      if (userRoleShouldBe === AgentsRoles.issuer && !checkUserAsIssuer) {
-        throw new ForbiddenException();
+      if (role === AgentsRoles.issuer && !checkUserAsIssuer) {
+        return false
       }
-      if (userRoleShouldBe === AgentsRoles.holder && !checkUserAsHolder) {
-        throw new ForbiddenException();
+      if (role === AgentsRoles.holder && !checkUserAsHolder) {
+        return false;
       }
-      if (userRoleShouldBe === AgentsRoles.verifier && !checkUserAsVerifier) {
-        throw new ForbiddenException();
+      if (role === AgentsRoles.verifier && !checkUserAsVerifier) {
+        return false;
       }
     }
 
-    return vc;
+    return true
   }
 }
