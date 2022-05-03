@@ -5,9 +5,9 @@ export interface VCData {
 }
 
 export enum VerificationStatuses {
-  pendingApproval = 'PENDING_APPROVAL',
-  approved = 'APPROVED',
-  rejected = 'REJECTED'
+  PENDING_VERIFY = "PENDING_VERIFY",
+  ACCEPTED = "ACCEPTED",
+  REJECTED = "REJECTED"
 }
 
 registerEnumType(VerificationStatuses, {
@@ -60,7 +60,7 @@ export class VerificationCase {
   verifierDid: Did;
 
   @Field(type => VerificationStatuses)
-  status: VerificationStatuses
+  verificationStatus: VerificationStatuses
 }
 
 @ObjectType()
@@ -92,6 +92,6 @@ export class VC {
   @Field(type => [VerificationCase])
   verificationCases: Array<{
     verifierDid: Did,
-    status: VerificationStatuses
+    verificationStatus: VerificationStatuses
   }>
 }
