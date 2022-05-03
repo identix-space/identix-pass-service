@@ -93,10 +93,10 @@ export class SimpleBrokerService implements IVcBroker{
   }
 
   private async generateJWT(header: KeyValueType, payload: KeyValueType, issuerDid: Did): Promise<string> {
-    const base64Header = btoa(JSON.stringify(header));
-    const base64Payload = btoa(JSON.stringify(payload));
+    const base64Header = Buffer.from(JSON.stringify(header), 'binary').toString('base64')
+    const base64Payload = Buffer.from(JSON.stringify(payload), 'binary').toString('base64');
     const signatureHash = `${base64Header}.${base64Payload}`;
     const signature = await this.walletsStorageClient.sign(issuerDid, signatureHash);
-    return `${base64Header}.${base64Payload}.${btoa(signature)}`;
+    return `${base64Header}.${base64Payload}.${Buffer.from(signature, 'binary').toString('base64')}`;
   }
 }
