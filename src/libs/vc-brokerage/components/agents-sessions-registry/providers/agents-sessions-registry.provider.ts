@@ -1,3 +1,4 @@
+import {getRepository, Repository} from "typeorm";
 import {ConfigService} from "@nestjs/config";
 import {LoggingService} from "@/libs/logging/services/logging.service";
 import {AgentsSessionsRegistry, IAgent, IAgentsSessionsRegistry} from "../types";
@@ -7,6 +8,8 @@ import {IMessagingClient, MessagingClient} from "@/libs/messaging/types";
 import {BrokersStrategies, IVcBrokersProvider, VcBrokers} from "@/libs/vc-brokerage/components/vc-brokers/types";
 import {IVcSchemesClient, VcSchemesClient} from "@/libs/vc-brokerage/components/vc-schemes/types";
 import {WalletsStorageClient, IWalletsStorageClient} from "@/libs/wallets-storage-client/types";
+import {BadRequestException} from "@nestjs/common";
+import {EventLogEntity} from "@/libs/database/entities";
 
 export const AgentsSessionsRegistryProvider = {
   provide: AgentsSessionsRegistry,
@@ -17,7 +20,14 @@ export const AgentsSessionsRegistryProvider = {
                vcSchemesClient: IVcSchemesClient,
                walletsStorageClient: IWalletsStorageClient
                ): Promise<IAgentsSessionsRegistry> =>
-    agentsSessionsRegistryFactory(config, logger, messagingClient, vcBrokersProvider, vcSchemesClient, walletsStorageClient),
+    agentsSessionsRegistryFactory(
+      config,
+      logger,
+      messagingClient,
+      vcBrokersProvider,
+      vcSchemesClient,
+      walletsStorageClient
+    ),
   inject: [
     ConfigService,
     LoggingService,
@@ -25,7 +35,7 @@ export const AgentsSessionsRegistryProvider = {
     VcBrokers,
     VcSchemesClient,
     WalletsStorageClient
-  ],
+  ]
 };
 
 async function  agentsSessionsRegistryFactory(
@@ -44,9 +54,19 @@ async function  agentsSessionsRegistryFactory(
 
   return {
     createAgentSession: (agentDid: Did): void  => {
-      const agent = new AgentService(messagingClient, vcBroker, vcSchemesClient, walletsStorageClient);
-
       if (!agentsSessionsStorage.has(agentDid)) {
+        const eventLogRepository = getRepository<EventLogEntity>(EventLogEntity);
+
+        const agent =
+          new AgentService(
+            agentDid,
+            messagingClient,
+            vcBroker,
+            vcSchemesClient,
+            walletsStorageClient,
+            eventLogRepository
+          );
+
         agentsSessionsStorage.set(agentDid, agent);
       }
     },
@@ -62,7 +82,7 @@ async function  agentsSessionsRegistryFactory(
         return;
       }
 
-      return agentsSessionsStorage.get(agentDid)
+      return agentsSessionsStorage.get(agentDid);
     },
     getAllAgentsSessionsDids: (): Did[] => {
       return Array.from(agentsSessionsStorage.keys());
