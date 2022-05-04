@@ -49,7 +49,7 @@ describe('BrokerService', () => {
   });
 
   it('getSchemes() => search by did', () => {
-    const result = service.getSchemes({did: 'did:vc-scheme:123456'});
+    const result = service.getSchemes({vcTypeDid: 'did:vc-scheme:123456'});
 
     expect(result).toBeDefined();
     expect(result.length).toBe(1);

@@ -63,6 +63,9 @@ async function  agentsSessionsRegistryFactory(
       }
 
       return agentsSessionsStorage.get(agentDid)
+    },
+    getAllAgentsSessionsDids: (): Did[] => {
+      return Array.from(agentsSessionsStorage.keys());
     }
   }
 }

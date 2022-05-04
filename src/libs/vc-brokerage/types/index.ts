@@ -1,13 +1,13 @@
-import {Field, ObjectType, registerEnumType} from "@nestjs/graphql";
+import {Field, ObjectType, registerEnumType, ArgsType} from "@nestjs/graphql";
 
 export interface VCData {
   [key: string]: string | number | boolean | VCData | VCData[] | null;
 }
 
 export enum VerificationStatuses {
-  pendingApproval = 'PENDING_APPROVAL',
-  approved = 'APPROVED',
-  rejected = 'REJECTED'
+  PENDING_VERIFY = "PENDING_VERIFY",
+  ACCEPTED = "ACCEPTED",
+  REJECTED = "REJECTED"
 }
 
 registerEnumType(VerificationStatuses, {
@@ -15,6 +15,7 @@ registerEnumType(VerificationStatuses, {
 });
 
 export type Did = string;
+
 export interface IVcSchema {
   did: Did,
   schema: string
@@ -54,12 +55,12 @@ export class EventLogEntry {
 }
 
 @ObjectType()
-class VerificationCase {
+export class VerificationCase {
   @Field(type => String)
   verifierDid: Did;
 
   @Field(type => VerificationStatuses)
-  status: VerificationStatuses
+  verificationStatus: VerificationStatuses
 }
 
 @ObjectType()
@@ -83,14 +84,14 @@ export class VC {
   holderDid: Did;
 
   @Field(type => String)
-  createdAt: Date;
+  createdAt: string;
 
   @Field(type => String)
-  updatedAt: Date;
+  updatedAt: string;
 
   @Field(type => [VerificationCase])
   verificationCases: Array<{
     verifierDid: Did,
-    status: VerificationStatuses
+    verificationStatus: VerificationStatuses
   }>
 }
