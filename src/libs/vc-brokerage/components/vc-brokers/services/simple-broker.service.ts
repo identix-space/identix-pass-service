@@ -50,13 +50,18 @@ export class SimpleBrokerService implements IVcBroker{
     vc.createdAt = vcObj.createdAt;
     vc.updatedAt = vcObj.updatedAt;
 
-    vc.vcRawText = await this.generateVCRawText(vcObj, vcParamsObj, vcSecret);
+    vc.vcRawText = await this.generateVCRawText(vcObj, vcTypeScheme, vcParamsObj, vcSecret);
     vc.vcParams = JSON.stringify(vcParamsObj);
 
     return vc;
   }
 
-  private async generateVCRawText(vc: VC, vcParamsObj: KeyValueType, vcSecret: string): Promise<string> {
+  private async generateVCRawText(
+    vc: VC,
+    vcTypeScheme: IVcScheme,
+    vcParamsObj: KeyValueType,
+    vcSecret: string
+  ): Promise<string> {
     const vcRawTextObj = vcTemplate;
 
     vcRawTextObj.payload.iss = vc.issuerDid;
@@ -65,15 +70,24 @@ export class SimpleBrokerService implements IVcBroker{
     vcRawTextObj.payload.iat = String((new Date()).getTime());
     vcRawTextObj.payload.jti = vc.vcDid;
     vcRawTextObj.payload.vc.id = vc.vcDid;
-    vcRawTextObj.payload.vc.credentialSubject = await this.generateSubjectState(vc, vcParamsObj, vcSecret);
+    vcRawTextObj.payload.vc.credentialSubject = await this.generateSubjectState(vc, vcTypeScheme, vcParamsObj, vcSecret);
     vcRawTextObj.jwt = await this.generateJWT(vcRawTextObj.header, vcRawTextObj.payload, vc.issuerDid);
 
     return JSON.stringify(vcRawTextObj);
   }
 
-  private async generateSubjectState(vc: VC, vcParamsObj: KeyValueType, vcSecret: string): Promise<KeyValueType> {
+  private async generateSubjectState(vc: VC, vcTypeScheme: IVcScheme, vcParamsObj: KeyValueType, vcSecret: string): Promise<KeyValueType> {
     try {
-      const credentialSubjectTmpl = credentialSubjectStateId(vc.holderDid, vcParamsObj);
+      let credentialSubjectHolder: (userDid: Did, params: KeyValueType) => KeyValueType;
+      if (vcTypeScheme.key === 'STATE_ID') {
+        credentialSubjectHolder = credentialSubjectStateId;
+      } else if (vcTypeScheme.key === 'PROOF_OF_RESIDENCY') {
+        credentialSubjectHolder = credentialSubjectProofOfResidency;
+      } else {
+        throw new BadRequestException('Unknown VC type')
+      }
+
+      const credentialSubjectTmpl = credentialSubjectHolder.call(this, vc.holderDid, vcParamsObj);
       const credentialSubject = [];
 
       for await (const group of credentialSubjectTmpl.groups) {
