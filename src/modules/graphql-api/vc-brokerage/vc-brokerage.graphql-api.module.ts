@@ -1,7 +1,7 @@
 import {Module} from '@nestjs/common';
 import {TypeOrmModule} from "@nestjs/typeorm";
 
-import {UsersEntity} from "@/libs/database/entities";
+import {EventLogEntity, UsersEntity} from "@/libs/database/entities";
 import {LoggingModule} from "@/libs/logging/logging.module";
 import {VCBrokerageGraphqlApiService} from "@/modules/graphql-api/vc-brokerage/services/vc-brokerage.graphql-api.service";
 import {VcBrokerageGraphqlApiResolvers} from "@/modules/graphql-api/vc-brokerage/resolvers/vc-brokerage.graphql-api.resolvers";
@@ -9,7 +9,7 @@ import {AgentsSessionsRegistryModule} from "@/libs/vc-brokerage/components/agent
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([UsersEntity]),
+    TypeOrmModule.forFeature([UsersEntity, EventLogEntity]),
     LoggingModule.forRoot({serviceName: 'VC Brokerage Graphql Api module'}),
     AgentsSessionsRegistryModule
   ],

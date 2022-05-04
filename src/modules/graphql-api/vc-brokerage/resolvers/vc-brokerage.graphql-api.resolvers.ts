@@ -68,10 +68,11 @@ export class VcBrokerageGraphqlApiResolvers {
 
   @Query(returns => [EventLogEntry])
   async getEventLogEntries(
+    @Context('req') req: { userDid?: string },
     @Args('startIndex', {type: () => Int, nullable: true}) startIndex?: number,
     @Args('count', {type: () => Int, nullable: true}) count?: number
   ): Promise<EventLogEntry[]>
   {
-    return [];
+    return this.vcBrokerageGraphqlAPIService.getEventLog(req?.userDid);
   }
 }

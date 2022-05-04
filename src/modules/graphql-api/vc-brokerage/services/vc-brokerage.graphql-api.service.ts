@@ -1,15 +1,21 @@
 import {ForbiddenException, Inject, Injectable} from "@nestjs/common";
-import {AgentsRoles, Did, VC, VerificationStatuses} from "@/libs/vc-brokerage/types";
+import {AgentsRoles, Did, EventLogEntry, VC, VerificationStatuses} from "@/libs/vc-brokerage/types";
 import {
   AgentsSessionsRegistry,
   IAgentsSessionsRegistry
 } from "@/libs/vc-brokerage/components/agents-sessions-registry/types";
 import {WalletsVCData} from "@/libs/wallets-storage-client/types";
 import {AgentService} from "@/libs/vc-brokerage/components/agents-sessions-registry/services/agent.service";
+import {InjectRepository} from "@nestjs/typeorm";
+import {EventLogEntity} from "@/libs/database/entities";
+import {Repository} from "typeorm";
 
 @Injectable()
 export class VCBrokerageGraphqlApiService {
-  constructor(@Inject(AgentsSessionsRegistry) private agentsSessionsRegistry: IAgentsSessionsRegistry) {}
+  constructor(
+    @Inject(AgentsSessionsRegistry) private agentsSessionsRegistry: IAgentsSessionsRegistry,
+    @InjectRepository(EventLogEntity) private eventLogRepository: Repository<EventLogEntity>
+  ) {}
 
   async getVcTypes(userDid: Did): Promise<{vcTypeDid: Did, vcTypeTag: string}[]> {
     const userAgent = this.agentsSessionsRegistry.getAgent(userDid);
@@ -95,6 +101,26 @@ export class VCBrokerageGraphqlApiService {
     return !!(await userAgent.verifyVc(vcDid, verifierDid, verificationStatus));
   }
 
+  async getEventLog(userDid: Did): Promise<EventLogEntry[]> {
+    const userVCs = await this.getUserVCs(userDid);
+    const userVCsDids = userVCs.map(vc => vc.vcDid);
+
+    const eventLog: EventLogEntity[] = [];
+    for await (const vcDid of userVCsDids) {
+      const vcEventLogs = await this.eventLogRepository.find({ where: { vcDid }});
+      eventLog.push(...vcEventLogs);
+    }
+
+    return eventLog.sort(this.compareByDate).map(evl => ({
+      id: evl.id,
+      ownerDid: evl.ownerDid,
+      vcDid: evl.vcDid,
+      eventType: evl.eventType,
+      message: evl.message,
+      eventDate: evl.createdAt
+    }));
+  }
+
   private async getVCAndAuthorize(
     vcDid: Did, userDid: Did,
     userAgent: AgentService,
@@ -136,5 +162,15 @@ export class VCBrokerageGraphqlApiService {
     }
 
     return true
+  }
+
+  private compareByDate(a: EventLogEntity, b: EventLogEntity): -1|1|0 {
+    if ( a.createdAt < b.createdAt ){
+      return -1;
+    }
+    if ( a.createdAt > b.createdAt ){
+      return 1;
+    }
+    return 0;
   }
 }
