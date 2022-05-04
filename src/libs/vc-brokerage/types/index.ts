@@ -1,4 +1,5 @@
-import {Field, ObjectType, registerEnumType, ArgsType} from "@nestjs/graphql";
+import {Field, ObjectType, registerEnumType, ArgsType, Int} from "@nestjs/graphql";
+import {EventTypes} from "@/libs/database/types/event-types.type";
 
 export interface VCData {
   [key: string]: string | number | boolean | VCData | VCData[] | null;
@@ -41,17 +42,23 @@ registerEnumType(AgentsRoles, {
 
 @ObjectType()
 export class EventLogEntry {
-  @Field(type => Number)
+  @Field(type => Int)
   id: number;
 
-  @Field(type => String)
-  created: Date;
+  @Field({nullable: false})
+  public ownerDid: string;
 
-  @Field(type => String)
-  owner: Did;
+  @Field({nullable: false})
+  public eventType: EventTypes;
 
-  @Field(type => String)
-  message: string;
+  @Field({nullable: false})
+  public vcDid: string;
+
+  @Field({nullable: false})
+  public message: string;
+
+  @Field({nullable: false})
+  public eventDate: Date;
 }
 
 @ObjectType()

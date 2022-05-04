@@ -3,13 +3,18 @@ import {IVcBroker} from "@/libs/vc-brokerage/components/vc-brokers/types";
 import {IVcScheme, IVcSchemesClient} from "@/libs/vc-brokerage/components/vc-schemes/types";
 import {IWalletsStorageClient, WalletsVCData} from "@/libs/wallets-storage-client/types";
 import {Did, VC, VerificationStatuses} from "@/libs/vc-brokerage/types";
+import {Repository} from "typeorm";
+import {EventLogEntity} from "@/libs/database/entities";
+import {EventTypes} from "@/libs/database/types/event-types.type";
 
 export class AgentService {
   constructor(
+    private readonly agentDid: Did,
     private messagingClient: IMessagingClient,
     private vcBroker: IVcBroker,
     private vcSchemes: IVcSchemesClient,
-    private walletsStorageClient: IWalletsStorageClient
+    private walletsStorageClient: IWalletsStorageClient,
+    private eventLogRepository: Repository<EventLogEntity>
   ) {}
 
   async getVcTypeSchemes(userDid: Did): Promise<IVcScheme[]> {
@@ -25,6 +30,15 @@ export class AgentService {
 
      await this.walletsStorageClient.createVC(vcData.vcDid, issuerDid, holderDid, JSON.stringify(vcData));
 
+     const eventLog = new EventLogEntity();
+     eventLog.eventType = EventTypes.ISSUER_VC;
+     eventLog.vcDid = vcData.vcDid;
+     eventLog.ownerDid = this.agentDid;
+     const vcTypeLog = vcTypeScheme.key === 'STATE_ID' ? "State ID" : "Proof Of Residency"
+     eventLog.message = `Verifiable credentials has been issured. Data: ${JSON.stringify({holder: holderDid, "VC type": vcTypeLog})}`;
+
+     await this.eventLogRepository.save(eventLog);
+
      return vcData.vcDid;
   }
 
@@ -37,10 +51,30 @@ export class AgentService {
   }
 
   async requestVcVerification(vcDid: Did, verifierDid: Did): Promise<boolean> {
-    return this.walletsStorageClient.requestVcVerification(vcDid, verifierDid);
+    await this.walletsStorageClient.requestVcVerification(vcDid, verifierDid);
+
+    const eventLog = new EventLogEntity();
+    eventLog.eventType = EventTypes.ISSUER_VC;
+    eventLog.vcDid = vcDid;
+    eventLog.ownerDid = this.agentDid;
+    eventLog.message = `Verification requested. Data: ${JSON.stringify({verifier: verifierDid})}`;
+
+    await this.eventLogRepository.save(eventLog);
+
+    return true
   }
 
   async verifyVc(vcDid: Did, verifierDid: Did, verificationStatus: VerificationStatuses): Promise<boolean> {
-    return this.walletsStorageClient.verifyVC(vcDid, verifierDid, verificationStatus);
+    await this.walletsStorageClient.verifyVC(vcDid, verifierDid, verificationStatus);
+
+    const eventLog = new EventLogEntity();
+    eventLog.eventType = EventTypes.ISSUER_VC;
+    eventLog.vcDid = vcDid;
+    eventLog.ownerDid = this.agentDid;
+    eventLog.message = `Credentials verified. Data: ${JSON.stringify({verifier: verifierDid, status: verificationStatus})}`;
+
+    await this.eventLogRepository.save(eventLog);
+
+    return true
   }
 }
