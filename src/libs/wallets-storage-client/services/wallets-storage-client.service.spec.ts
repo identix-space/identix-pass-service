@@ -30,11 +30,12 @@ describe('WalletsStorageService', () => {
   it('createVC(): result should be defined', async () => {
     const vcParamsObj = {property1: "value1", property2: "value2"};
     const result =
-      await service.createVC(
+      await service.saveVC(
         'test:did:123456',
         'did:ever:23123',
         'did:ever:453',
-        JSON.stringify(vcParamsObj)
+        JSON.stringify(vcParamsObj),
+        'secret'
       );
     expect(result).toBeDefined();
   });

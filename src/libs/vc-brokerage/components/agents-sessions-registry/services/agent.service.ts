@@ -26,20 +26,20 @@ export class AgentService {
      if (!vcTypeScheme) {
        throw new Error(`Unknown vcType scheme. Params: ${JSON.stringify({vcTypeDid})}`);
      }
-     const vcData: VC = await this.vcBroker.buildVc(issuerDid, holderDid, vcTypeScheme, vcParams);
+     const {vc, vcSecret} = await this.vcBroker.buildVc(issuerDid, holderDid, vcTypeScheme, vcParams);
 
-     await this.walletsStorageClient.createVC(vcData.vcDid, issuerDid, holderDid, JSON.stringify(vcData));
+     await this.walletsStorageClient.saveVC(vc.vcDid, issuerDid, holderDid, JSON.stringify(vc), vcSecret);
 
      const eventLog = new EventLogEntity();
      eventLog.eventType = EventTypes.ISSUER_VC;
-     eventLog.vcDid = vcData.vcDid;
+     eventLog.vcDid = vc.vcDid;
      eventLog.ownerDid = this.agentDid;
      const vcTypeLog = vcTypeScheme.key === 'STATE_ID' ? "State ID" : "Proof Of Residency"
      eventLog.message = `Verifiable credentials has been issured. Data: ${JSON.stringify({holder: holderDid, "VC type": vcTypeLog})}`;
 
      await this.eventLogRepository.save(eventLog);
 
-     return vcData.vcDid;
+     return vc.vcDid;
   }
 
   async getUserVCs(userDid: Did): Promise<WalletsVCData[]> {

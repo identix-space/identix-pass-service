@@ -11,15 +11,15 @@ import hmac from 'js-crypto-hmac';
 import jseu from 'js-encoding-utils';
 
 import {BadRequestException} from "@nestjs/common";
+import {faker} from "@faker-js/faker";
 
 export class SimpleBrokerService implements IVcBroker{
   constructor(
     private messagingClient: IMessagingClient,
-    private walletsStorageClient: IWalletsStorageClient,
-    private vcSchemes: IVcSchemesClient
+    private walletsStorageClient: IWalletsStorageClient
   ) {}
 
-  async buildVc(issuerDid: Did, holderDid: Did, vcTypeScheme: IVcScheme, vcParams: string): Promise<VC> {
+  async buildVc(issuerDid: Did, holderDid: Did, vcTypeScheme: IVcScheme, vcParams: string): Promise<{vc: VC, vcSecret: string}> {
     let vcParamsObj;
     try {
       vcParamsObj = JSON.parse(vcParams);
@@ -28,57 +28,43 @@ export class SimpleBrokerService implements IVcBroker{
       throw new Error(`Invalid vcParams data. Parameter vsParams should be JSON string. Params: ${JSON.stringify(params)}`);
     }
 
-    const {vcDid, vcSecret} = await this.walletsStorageClient.generateVcDid();
-
-    const vcObj = {
-      vcDid,
-      vcTypeDid: vcTypeScheme.did,
-      vcParams: vcParamsObj,
-      issuerDid: issuerDid,
-      holderDid: holderDid,
-      verificationCases: [],
-      createdAt: (new Date()).toISOString(),
-      updatedAt: (new Date()).toISOString()
-    } as VC;
+    const vcSecret = faker.random.alphaNumeric(30);
+    const credentialSubject =
+      await this.generateCredentialSubject(
+        issuerDid,
+        holderDid,
+        vcTypeScheme,
+        vcParamsObj,
+        vcSecret
+      );
+    const vcDid = await this.deployVcAndCreateVcDid(credentialSubject);
 
     const vc = {} as VC;
-    vc.vcDid = vcObj.vcDid;
-    vc.vcTypeDid = vcObj.vcTypeDid;
-    vc.issuerDid = vcObj.issuerDid;
-    vc.holderDid = vcObj.holderDid;
-    vc.verificationCases = vcObj.verificationCases;
-    vc.createdAt = vcObj.createdAt;
-    vc.updatedAt = vcObj.updatedAt;
+    vc.vcDid = vcDid;
+    vc.vcParams = vcParamsObj;
+    vc.vcTypeDid = vcTypeScheme.did;
+    vc.issuerDid = issuerDid;
+    vc.holderDid = holderDid;
+    vc.verificationCases = [];
+    vc.createdAt = (new Date()).toISOString();
+    vc.updatedAt = (new Date()).toISOString();
 
-    vc.vcRawText = await this.generateVCRawText(vcObj, vcTypeScheme, vcParamsObj, vcSecret);
+    vc.vcRawText = await this.generateVCRawText(vc, credentialSubject);
     vc.vcParams = JSON.stringify(vcParamsObj);
 
-    return vc;
+    return {vc, vcSecret};
   }
 
-  private async generateVCRawText(
-    vc: VC,
+  private async generateCredentialSubject(
+    issuerDid: Did,
+    holderDid: Did,
     vcTypeScheme: IVcScheme,
     vcParamsObj: KeyValueType,
     vcSecret: string
-  ): Promise<string> {
-    const vcRawTextObj = vcTemplate;
-
-    vcRawTextObj.payload.iss = vc.issuerDid;
-    vcRawTextObj.payload.aud = [];
-    vcRawTextObj.payload.nbf = String((new Date()).getTime());
-    vcRawTextObj.payload.iat = String((new Date()).getTime());
-    vcRawTextObj.payload.jti = vc.vcDid;
-    vcRawTextObj.payload.vc.id = vc.vcDid;
-    vcRawTextObj.payload.vc.credentialSubject = await this.generateSubjectState(vc, vcTypeScheme, vcParamsObj, vcSecret);
-    vcRawTextObj.jwt = await this.generateJWT(vcRawTextObj.header, vcRawTextObj.payload, vc.issuerDid);
-
-    return JSON.stringify(vcRawTextObj);
-  }
-
-  private async generateSubjectState(vc: VC, vcTypeScheme: IVcScheme, vcParamsObj: KeyValueType, vcSecret: string): Promise<KeyValueType> {
+  ): Promise<KeyValueType> {
     try {
       let credentialSubjectHolder: (userDid: Did, params: KeyValueType) => KeyValueType;
+
       if (vcTypeScheme.key === 'STATE_ID') {
         credentialSubjectHolder = credentialSubjectStateId;
       } else if (vcTypeScheme.key === 'PROOF_OF_RESIDENCY') {
@@ -87,7 +73,7 @@ export class SimpleBrokerService implements IVcBroker{
         throw new BadRequestException('Unknown VC type')
       }
 
-      const credentialSubjectTmpl = credentialSubjectHolder.call(this, vc.holderDid, vcParamsObj);
+      const credentialSubjectTmpl = credentialSubjectHolder.call(this, holderDid, vcParamsObj);
       const credentialSubject = [];
 
       for await (const group of credentialSubjectTmpl.groups) {
@@ -96,15 +82,35 @@ export class SimpleBrokerService implements IVcBroker{
         const key = jseu.encoder.stringToArrayBuffer(vcSecret);
         const msg = jseu.encoder.stringToArrayBuffer(JSON.stringify({id, claims}));
         const signatureHash = jseu.encoder.arrayBufferToString(await hmac.compute(key, msg, 'SHA-256'))
-        const signature = await this.walletsStorageClient.sign(vc.issuerDid, signatureHash);
+        const signature = await this.walletsStorageClient.sign(issuerDid, signatureHash);
 
         credentialSubject.push({id, claims, signature});
       }
 
       return credentialSubject;
     } catch (e) {
-      throw new BadRequestException(`Could not generate subject state: ${JSON.stringify({vc, vcParams: vcParamsObj})}`)
+      throw new BadRequestException(`Could not generate subject state: ${JSON.stringify({
+        issuerDid,
+        holderDid,
+        vcType: vcTypeScheme.key,
+        vcParams: vcParamsObj})
+      }`)
     }
+  }
+
+  private async generateVCRawText(vc: VC, credentialSubject: KeyValueType): Promise<string> {
+    const vcRawTextObj = vcTemplate;
+
+    vcRawTextObj.payload.iss = vc.issuerDid;
+    vcRawTextObj.payload.aud = [];
+    vcRawTextObj.payload.nbf = String((new Date()).getTime());
+    vcRawTextObj.payload.iat = String((new Date()).getTime());
+    vcRawTextObj.payload.jti = vc.vcDid;
+    vcRawTextObj.payload.vc.id = vc.vcDid;
+    vcRawTextObj.payload.vc.credentialSubject = credentialSubject;
+    vcRawTextObj.jwt = await this.generateJWT(vcRawTextObj.header, vcRawTextObj.payload, vc.issuerDid);
+
+    return JSON.stringify(vcRawTextObj);
   }
 
   private async generateJWT(header: KeyValueType, payload: KeyValueType, issuerDid: Did): Promise<string> {
@@ -112,6 +118,11 @@ export class SimpleBrokerService implements IVcBroker{
     const base64Payload = Buffer.from(JSON.stringify(payload), 'binary').toString('base64');
     const signatureHash = `${base64Header}.${base64Payload}`;
     const signature = await this.walletsStorageClient.sign(issuerDid, signatureHash);
+
     return `${base64Header}.${base64Payload}.${Buffer.from(signature, 'binary').toString('base64')}`;
+  }
+
+  private async deployVcAndCreateVcDid(credentialSubject: KeyValueType): Promise<Did> {
+    return `did:ever:vc:${faker.random.alphaNumeric(30)}`;
   }
 }
