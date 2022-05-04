@@ -54,7 +54,7 @@ export class AgentService {
     await this.walletsStorageClient.requestVcVerification(vcDid, verifierDid);
 
     const eventLog = new EventLogEntity();
-    eventLog.eventType = EventTypes.ISSUER_VC;
+    eventLog.eventType = EventTypes.REQUEST_VC_VERIFICATION;
     eventLog.vcDid = vcDid;
     eventLog.ownerDid = this.agentDid;
     eventLog.message = `Verification requested. Data: ${JSON.stringify({verifier: verifierDid})}`;
@@ -68,7 +68,7 @@ export class AgentService {
     await this.walletsStorageClient.verifyVC(vcDid, verifierDid, verificationStatus);
 
     const eventLog = new EventLogEntity();
-    eventLog.eventType = EventTypes.ISSUER_VC;
+    eventLog.eventType = EventTypes.VERIFICATED;
     eventLog.vcDid = vcDid;
     eventLog.ownerDid = this.agentDid;
     eventLog.message = `Credentials verified. Data: ${JSON.stringify({verifier: verifierDid, status: verificationStatus})}`;
