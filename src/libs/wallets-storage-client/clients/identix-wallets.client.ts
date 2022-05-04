@@ -27,7 +27,7 @@ export class IdentixWalletsStorageClient extends BaseStorageWalletsClient implem
           $holderDid: String!
           $vcSecret: String!
         ) {  
-           createVC(
+           saveVC(
              vcDid: $vcDid,
              vcData: $vcData,
              issuerDid: $issuerDid,
