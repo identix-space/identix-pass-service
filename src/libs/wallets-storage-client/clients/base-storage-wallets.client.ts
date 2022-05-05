@@ -9,7 +9,7 @@ export class BaseStorageWalletsClient implements IWalletsStorageClient {
     return;
   }
 
-  public async createVC(vcDid: Did, issuerDid: Did, holderDid: Did, vcData: string): Promise<void> {
+  public async saveVC(vcDid: Did, issuerDid: Did, holderDid: Did, vcData: string, vcSecret: string): Promise<void> {
     return;
   }
 
@@ -33,7 +33,7 @@ export class BaseStorageWalletsClient implements IWalletsStorageClient {
     return;
   }
 
-  async sign(userDid: Did, msg: string): Promise<string> {
+  async sign(userDid: Did, message: string): Promise<{signed: string, signature: string}> {
     return;
   }
 }

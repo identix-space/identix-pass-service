@@ -14,8 +14,8 @@ export class WalletsStorageService {
     return this.walletsStorageClient.getOrCreateAccount(params);
   }
 
-  public async  createVC(vcDid: Did, issuerDid: Did, holderDid: Did, vcData: string): Promise<void> {
-    return this.walletsStorageClient.createVC(vcDid, issuerDid, holderDid, vcData);
+  public async  saveVC(vcDid: Did, issuerDid: Did, holderDid: Did, vcData: string, vcSecret: string): Promise<void> {
+    return this.walletsStorageClient.saveVC(vcDid, issuerDid, holderDid, vcData, vcSecret);
   }
 
   async getUserVCs(userDid: Did): Promise<WalletsVCData[]> {
@@ -35,15 +35,14 @@ export class WalletsStorageService {
   }
 
   async generateVcDid(): Promise<{vcDid: Did, vcSecret: string}> {
-    //return this.walletsStorageClient.generateVcDid();
     return {
       vcDid: did(),
       vcSecret: faker.random.alphaNumeric(30)
     }
   }
 
-  async sign(userDid: Did, msg: string): Promise<string> {
-    //return this.walletsStorageClient.sign(userDid, msg);
-    return faker.random.alphaNumeric(64);
+  async sign(userDid: Did, msg: string): Promise<{signed: string, signature: string}> {
+    return this.walletsStorageClient.sign(userDid, msg);
+    //return faker.random.alphaNumeric(64);
   }
 }

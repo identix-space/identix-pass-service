@@ -11,13 +11,13 @@ export const WalletsStorageClient = 'WALLETS_STORAGE_CLIENT';
 
 export interface IWalletsStorageClient {
   getOrCreateAccount: (params: KeyValueType) => Promise<Did[]>;
-  createVC: (vcDid: Did, issuerDid: Did, holderDid: Did, vcData: string) => Promise<void>;
+  saveVC: (vcDid: Did, issuerDid: Did, holderDid: Did, vcData: string, vcSecret) => Promise<void>;
   getUserVCs: (userDid: Did) =>  Promise<WalletsVCData[]>;
   getVC: (vcDid: Did) => Promise<WalletsVCData>;
   requestVcVerification: (vcDid: Did, verifierDid: Did) => Promise<boolean>;
   verifyVC: (vcDid: Did, verifierDid: Did, verificationStatus: VerificationStatuses) => Promise<boolean>;
   generateVcDid: () => Promise<{vcDid: Did, vcSecret: string}>;
-  sign: (userDid: Did, msg: string) => Promise<string>;
+  sign: (userDid: Did, msg: string) => Promise<{signed: string, signature: string}>;
 }
 
 export type WalletsStorageConfiguration = {

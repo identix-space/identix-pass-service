@@ -8,7 +8,7 @@ export enum BrokersStrategies  {
 }
 
 export interface IVcBroker {
-  buildVc: (issuerDid: Did, holderDid: Did, vcTypeScheme: IVcScheme, vcParams: string) => Promise<VC>;
+  buildVc: (issuerDid: Did, holderDid: Did, vcTypeScheme: IVcScheme, vcParams: string) => Promise<{vc: VC, vcSecret: string}>;
 }
 
 export interface IVcBrokersProvider {
