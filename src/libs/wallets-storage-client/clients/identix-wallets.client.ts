@@ -18,26 +18,28 @@ export class IdentixWalletsStorageClient extends BaseStorageWalletsClient implem
     return [`did:ever:user:${faker.random.alphaNumeric(30)}`];
   }
 
-  public async createVC(vcDid: Did, issuerDid: Did, holderDid: Did, vcData: string): Promise<void> {
+  public async saveVC(vcDid: Did, issuerDid: Did, holderDid: Did, vcData: string, vcSecret: string): Promise<void> {
     const query = gql`
-      mutation createVC(
+      mutation saveVC(
           $vcDid: String!
           $vcData: String!
           $issuerDid: String!
           $holderDid: String!
+          $vcSecret: String!
         ) {  
-           createVC(
+           saveVC(
              vcDid: $vcDid,
              vcData: $vcData,
              issuerDid: $issuerDid,
-             holderDid: $holderDid 
+             holderDid: $holderDid,
+             vcSecret: $vcSecret 
           ) {
             id
           }
         }      
     `;
 
-    await this.graphQLClient.request(query, {vcDid, issuerDid, holderDid, vcData});
+    await this.graphQLClient.request(query, {vcDid, issuerDid, holderDid, vcData, vcSecret});
   }
 
   async getUserVCs(userDid: Did): Promise<WalletsVCData[]> {

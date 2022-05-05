@@ -9,7 +9,7 @@ export class BaseStorageWalletsClient implements IWalletsStorageClient {
     return;
   }
 
-  public async createVC(vcDid: Did, issuerDid: Did, holderDid: Did, vcData: string): Promise<void> {
+  public async saveVC(vcDid: Did, issuerDid: Did, holderDid: Did, vcData: string, vcSecret: string): Promise<void> {
     return;
   }
 
