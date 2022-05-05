@@ -81,10 +81,13 @@ export class SimpleBrokerService implements IVcBroker{
 
         const key = jseu.encoder.stringToArrayBuffer(vcSecret);
         const msg = jseu.encoder.stringToArrayBuffer(JSON.stringify({id, claims}));
-        const signatureHash = jseu.encoder.arrayBufferToString(await hmac.compute(key, msg, 'SHA-256'))
-        const signature = await this.walletsStorageClient.sign(issuerDid, signatureHash);
+        const hmacMsgHash = jseu.encoder.arrayBufferToString(await hmac.compute(key, msg, 'SHA-256'));
+        const hmacMsgHashBase64 = Buffer.from(JSON.stringify(hmacMsgHash), 'binary').toString('base64');
 
-        credentialSubject.push({id, claims, signature});
+        const signResult = await this.walletsStorageClient.signMessage(issuerDid, hmacMsgHashBase64);
+        const { signed } = signResult;
+
+        credentialSubject.push({id, claims, signature: signed});
       }
 
       return credentialSubject;
@@ -114,12 +117,12 @@ export class SimpleBrokerService implements IVcBroker{
   }
 
   private async generateJWT(header: KeyValueType, payload: KeyValueType, issuerDid: Did): Promise<string> {
-    const base64Header = Buffer.from(JSON.stringify(header), 'binary').toString('base64')
+    const base64Header = Buffer.from(JSON.stringify(header), 'binary').toString('base64');
     const base64Payload = Buffer.from(JSON.stringify(payload), 'binary').toString('base64');
     const signatureHash = `${base64Header}.${base64Payload}`;
-    const signature = await this.walletsStorageClient.sign(issuerDid, signatureHash);
+    const {signed} = await this.walletsStorageClient.signMessage(issuerDid, signatureHash);
 
-    return `${base64Header}.${base64Payload}.${Buffer.from(signature, 'binary').toString('base64')}`;
+    return `${base64Header}.${base64Payload}.${Buffer.from(signed, 'binary').toString('base64')}`;
   }
 
   private async deployVcAndCreateVcDid(credentialSubject: KeyValueType): Promise<Did> {

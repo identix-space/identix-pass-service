@@ -33,7 +33,7 @@ export class BaseStorageWalletsClient implements IWalletsStorageClient {
     return;
   }
 
-  async sign(userDid: Did, msg: string): Promise<string> {
+  async signMessage(userDid: Did, msg: string): Promise<{signed: string, signature: string}> {
     return;
   }
 }
