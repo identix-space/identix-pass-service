@@ -10,22 +10,18 @@ import { WalletsStorageService } from "@/libs/wallets-storage-client/services/wa
 
 export const WalletsStorageClientProvider = {
   provide: WalletsStorageClient,
-  useFactory: (config: ConfigService): IWalletsStorageClient => vcStorageClientFactory(config),
-  inject: [
-    ConfigService,
-    IdentixWalletsStorageClient,
-    WalletsStorageService
-  ],
+  useFactory: (config: ConfigService): IWalletsStorageClient => walletsStorageClientFactory(config),
+  inject: [ConfigService],
 };
 
-function vcStorageClientFactory(
+function walletsStorageClientFactory(
   config: ConfigService
 ): IWalletsStorageClient {
   const walletsStorageConfig = config.get<WalletsStorageConfiguration>('wallets-storage-configuration');
-  if (!walletsStorageConfig || !walletsStorageConfig.walletsStorageUrl) {
+  if (!walletsStorageConfig || !walletsStorageConfig.walletsStorageUrl || !walletsStorageConfig.walletsApiToken) {
     throw new Error(`Wallets storage configuration is invalid!`);
   }
 
-  const walletsStorageClient = new IdentixWalletsStorageClient(walletsStorageConfig.walletsStorageUrl);
+  const walletsStorageClient = new IdentixWalletsStorageClient(walletsStorageConfig);
   return new WalletsStorageService(walletsStorageClient);
 }

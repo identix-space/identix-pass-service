@@ -68,7 +68,7 @@ pipeline {
                           sh('''#!/bin/bash
                           echo Branch Name: $BRANCH_NAME
                           cd /var/www/identix-pass/$BRANCH_NAME
-                          docker-compose up -d 
+                          docker-compose up -d --force-recreate
                         ''')
                     }
                 post {

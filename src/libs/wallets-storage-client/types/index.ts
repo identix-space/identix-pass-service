@@ -1,18 +1,37 @@
-import {VCData} from "@/libs/vc-brokerage/types";
+import {Did} from "@/libs/vc-brokerage/types";
+import {KeyValueType} from "@/libs/common/types";
+import {VerificationStatuses} from "@/libs/vc-brokerage/types";
+
 
 export enum WalletsStorageKinds {
-  identixWalletsStorage = 'IDENTIX_STORAGE_WALLETS',
+  identixWalletsStorage = 'IDENTIX_WALLETS_STORAGE',
 }
 
-export const WalletsStorageClient = 'VC_STORAGE_CLIENT';
+export const WalletsStorageClient = 'WALLETS_STORAGE_CLIENT';
 
 export interface IWalletsStorageClient {
-  createVC: (did: string, vcData: VCData) => Promise<string>;
-  readVC: (did: string) => Promise<VCData>;
-  updateVC: (did: string, vcData: VCData) => Promise<void>;
-  deleteVC: (did: string) => Promise<void>;
+  getOrCreateAccount: (params: KeyValueType) => Promise<Did[]>;
+  createVC: (vcDid: Did, issuerDid: Did, holderDid: Did, vcData: string) => Promise<void>;
+  getUserVCs: (userDid: Did) =>  Promise<WalletsVCData[]>;
+  getVC: (vcDid: Did) => Promise<WalletsVCData>;
+  requestVcVerification: (vcDid: Did, verifierDid: Did) => Promise<boolean>;
+  verifyVC: (vcDid: Did, verifierDid: Did, verificationStatus: VerificationStatuses) => Promise<boolean>;
+  generateVcDid: () => Promise<{vcDid: Did, vcSecret: string}>;
+  sign: (userDid: Did, msg: string) => Promise<string>;
 }
 
 export type WalletsStorageConfiguration = {
   walletsStorageUrl: string;
+  walletsApiToken: string;
+}
+
+export interface WalletsVCData {
+  vcDid: Did,
+  vcData: Did,
+  issuerDid: Did,
+  holderDid: string,
+  verificationCases: {
+    verifierDid: Did,
+    verificationStatus: VerificationStatuses
+  }[]
 }

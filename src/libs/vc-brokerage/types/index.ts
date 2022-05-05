@@ -1,13 +1,14 @@
-import {Field, ObjectType, registerEnumType} from "@nestjs/graphql";
+import {Field, ObjectType, registerEnumType, ArgsType, Int} from "@nestjs/graphql";
+import {EventTypes} from "@/libs/database/types/event-types.type";
 
 export interface VCData {
   [key: string]: string | number | boolean | VCData | VCData[] | null;
 }
 
 export enum VerificationStatuses {
-  pendingApproval = 'PENDING_APPROVAL',
-  approved = 'APPROVED',
-  rejected = 'REJECTED'
+  PENDING_VERIFY = "PENDING_VERIFY",
+  ACCEPTED = "ACCEPTED",
+  REJECTED = "REJECTED"
 }
 
 registerEnumType(VerificationStatuses, {
@@ -15,6 +16,7 @@ registerEnumType(VerificationStatuses, {
 });
 
 export type Did = string;
+
 export interface IVcSchema {
   did: Did,
   schema: string
@@ -40,26 +42,32 @@ registerEnumType(AgentsRoles, {
 
 @ObjectType()
 export class EventLogEntry {
-  @Field(type => Number)
+  @Field(type => Int)
   id: number;
 
-  @Field(type => String)
-  created: Date;
+  @Field({nullable: false})
+  public ownerDid: string;
 
-  @Field(type => String)
-  owner: Did;
+  @Field({nullable: false})
+  public eventType: EventTypes;
 
-  @Field(type => String)
-  message: string;
+  @Field({nullable: false})
+  public vcDid: string;
+
+  @Field({nullable: false})
+  public message: string;
+
+  @Field({nullable: false})
+  public eventDate: Date;
 }
 
 @ObjectType()
-class VerificationCase {
+export class VerificationCase {
   @Field(type => String)
   verifierDid: Did;
 
   @Field(type => VerificationStatuses)
-  status: VerificationStatuses
+  verificationStatus: VerificationStatuses
 }
 
 @ObjectType()
@@ -83,14 +91,14 @@ export class VC {
   holderDid: Did;
 
   @Field(type => String)
-  createdAt: Date;
+  createdAt: string;
 
   @Field(type => String)
-  updatedAt: Date;
+  updatedAt: string;
 
   @Field(type => [VerificationCase])
   verificationCases: Array<{
     verifierDid: Did,
-    status: VerificationStatuses
+    verificationStatus: VerificationStatuses
   }>
 }

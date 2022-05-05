@@ -1,4 +1,5 @@
-import {Did} from "@/libs/vc-brokerage/types";
+import {Did, VC} from "@/libs/vc-brokerage/types";
+import {IVcScheme} from "@/libs/vc-brokerage/components/vc-schemes/types";
 
 export const VcBrokers = 'VC_BROKERS';
 
@@ -7,8 +8,7 @@ export enum BrokersStrategies  {
 }
 
 export interface IVcBroker {
-  connect: (party: Did) => Promise<Did>;
-  issueVc: (session: Did) => Promise<Did>;
+  buildVc: (issuerDid: Did, holderDid: Did, vcTypeScheme: IVcScheme, vcParams: string) => Promise<VC>;
 }
 
 export interface IVcBrokersProvider {

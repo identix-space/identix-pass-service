@@ -9,6 +9,7 @@ import {GraphQLAppModule} from "@/libs/graphql/graphql.module";
 import {GraphQLApiModule} from "@/modules/graphql-api/graphql-api.module";
 import {AuthenticationModule} from "@/modules/authentication/authentication.module";
 import {MessagingModule} from "@/libs/messaging/messaging.module";
+import {AgentsSessionsRegistryModule} from "@/libs/vc-brokerage/components/agents-sessions-registry/agents-sessions-registry.module";
 
 @Module({
   imports: [
