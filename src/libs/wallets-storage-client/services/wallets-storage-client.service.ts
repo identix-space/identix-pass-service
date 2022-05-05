@@ -3,6 +3,7 @@ import { KeyValueType} from "@/libs/common/types";
 import { IdentixWalletsStorageClient } from "@/libs/wallets-storage-client/clients/identix-wallets.client";
 import {WalletsVCData} from "@/libs/wallets-storage-client/types";
 import {faker} from "@faker-js/faker";
+import {did} from "@/libs/common/helpers/strings.helpers";
 
 export class WalletsStorageService {
   constructor(
@@ -13,8 +14,8 @@ export class WalletsStorageService {
     return this.walletsStorageClient.getOrCreateAccount(params);
   }
 
-  public async  createVC(vcDid: Did, issuerDid: Did, holderDid: Did, vcData: string): Promise<void> {
-    return this.walletsStorageClient.createVC(vcDid, issuerDid, holderDid, vcData);
+  public async  saveVC(vcDid: Did, issuerDid: Did, holderDid: Did, vcData: string, vcSecret: string): Promise<void> {
+    return this.walletsStorageClient.saveVC(vcDid, issuerDid, holderDid, vcData, vcSecret);
   }
 
   async getUserVCs(userDid: Did): Promise<WalletsVCData[]> {
@@ -34,15 +35,14 @@ export class WalletsStorageService {
   }
 
   async generateVcDid(): Promise<{vcDid: Did, vcSecret: string}> {
-    //return this.walletsStorageClient.generateVcDid();
     return {
-      vcDid: `did:ever:vc:${faker.random.alphaNumeric(30)}`,
+      vcDid: did(),
       vcSecret: faker.random.alphaNumeric(30)
     }
   }
 
-  async sign(userDid: Did, msg: string): Promise<string> {
-    //return this.walletsStorageClient.sign(userDid, msg);
-    return faker.random.alphaNumeric(50);
+  async sign(userDid: Did, msg: string): Promise<{signed: string, signature: string}> {
+    return this.walletsStorageClient.sign(userDid, msg);
+    //return faker.random.alphaNumeric(64);
   }
 }
