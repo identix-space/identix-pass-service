@@ -16,10 +16,6 @@ export class SsoClientService implements ISSOClientService{
   }
 
   public async registerSession(clientDid: Did): Promise<Did> {
-    // const otcDid = await this.ssoService.requestClientLogin(clientDid)
-    // const signedOtcDid = 'signed_' + otcDid;
-    // const sessionTokenDid = await this.ssoService.attemptClientLogin(clientDid, signedOtcDid);
-
     const sessionTokenDid = `did:ever:session:${faker.random.alphaNumeric(30)}`;
     return sessionTokenDid;
 
