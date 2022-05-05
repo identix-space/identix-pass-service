@@ -124,7 +124,23 @@ export class IdentixWalletsStorageClient extends BaseStorageWalletsClient implem
     return;
   }
 
-  async sign(userDid: Did, msg: string): Promise<string> {
-    return;
+  async signMessage(userDid: Did, message: string): Promise<{signed: string, signature: string}> {
+    const query = gql`
+      mutation signMessage(
+          $accountDid: String!
+          $message: String!
+        ) {  
+           signMessage(
+             accountDid: $accountDid,
+             message: $message
+          ) {
+            signed,
+            signature
+          }
+        }      
+    `;
+
+    const { signMessage } = await this.graphQLClient.request(query, {accountDid: userDid, message});
+    return { ...signMessage };
   }
 }

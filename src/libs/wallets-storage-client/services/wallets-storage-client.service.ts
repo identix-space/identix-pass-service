@@ -41,8 +41,7 @@ export class WalletsStorageService {
     }
   }
 
-  async sign(userDid: Did, msg: string): Promise<string> {
-    //return this.walletsStorageClient.sign(userDid, msg);
-    return faker.random.alphaNumeric(50);
+  async signMessage(userDid: Did, msg: string): Promise<{signed: string, signature: string}> {
+    return this.walletsStorageClient.signMessage(userDid, msg);
   }
 }
