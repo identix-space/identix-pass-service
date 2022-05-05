@@ -19,7 +19,7 @@ export class SimpleBrokerService implements IVcBroker{
     private vcSchemes: IVcSchemesClient
   ) {}
 
-  async buildVc(issuerDid: Did, holderDid: Did, vcTypeScheme: IVcScheme, vcParams: string): Promise<VC> {
+  async buildVc(issuerDid: Did, holderDid: Did, vcTypeScheme: IVcScheme, vcParams: string): Promise<{vc: VC, vcSecret: string}> {
     let vcParamsObj;
     try {
       vcParamsObj = JSON.parse(vcParams);
@@ -53,7 +53,7 @@ export class SimpleBrokerService implements IVcBroker{
     vc.vcRawText = await this.generateVCRawText(vcObj, vcTypeScheme, vcParamsObj, vcSecret);
     vc.vcParams = JSON.stringify(vcParamsObj);
 
-    return vc;
+    return {vc, vcSecret};
   }
 
   private async generateVCRawText(
@@ -96,9 +96,9 @@ export class SimpleBrokerService implements IVcBroker{
         const key = jseu.encoder.stringToArrayBuffer(vcSecret);
         const msg = jseu.encoder.stringToArrayBuffer(JSON.stringify({id, claims}));
         const signatureHash = jseu.encoder.arrayBufferToString(await hmac.compute(key, msg, 'SHA-256'))
-        const signature = await this.walletsStorageClient.sign(vc.issuerDid, signatureHash);
+        const {signed} = await this.walletsStorageClient.sign(vc.issuerDid, signatureHash);
 
-        credentialSubject.push({id, claims, signature});
+        credentialSubject.push({id, claims, signature: signed});
       }
 
       return credentialSubject;
@@ -110,8 +110,8 @@ export class SimpleBrokerService implements IVcBroker{
   private async generateJWT(header: KeyValueType, payload: KeyValueType, issuerDid: Did): Promise<string> {
     const base64Header = Buffer.from(JSON.stringify(header), 'binary').toString('base64')
     const base64Payload = Buffer.from(JSON.stringify(payload), 'binary').toString('base64');
-    const signatureHash = `${base64Header}.${base64Payload}`;
-    const signature = await this.walletsStorageClient.sign(issuerDid, signatureHash);
-    return `${base64Header}.${base64Payload}.${Buffer.from(signature, 'binary').toString('base64')}`;
+    const signatureHash =  Buffer.from(JSON.stringify(`${base64Header}.${base64Payload}`), 'binary').toString('base64');
+    const {signed} = await this.walletsStorageClient.sign(issuerDid, signatureHash);
+    return `${base64Header}.${base64Payload}.${Buffer.from(signed, 'binary').toString('base64')}`;
   }
 }

@@ -18,26 +18,28 @@ export class IdentixWalletsStorageClient extends BaseStorageWalletsClient implem
     return [`did:ever:user:${faker.random.alphaNumeric(30)}`];
   }
 
-  public async createVC(vcDid: Did, issuerDid: Did, holderDid: Did, vcData: string): Promise<void> {
+  public async saveVC(vcDid: Did, issuerDid: Did, holderDid: Did, vcData: string, vcSecret: string): Promise<void> {
     const query = gql`
-      mutation createVC(
+      mutation saveVC(
           $vcDid: String!
           $vcData: String!
           $issuerDid: String!
           $holderDid: String!
+          $vcSecret: String!
         ) {  
-           createVC(
+           saveVC(
              vcDid: $vcDid,
              vcData: $vcData,
              issuerDid: $issuerDid,
-             holderDid: $holderDid 
+             holderDid: $holderDid,
+             vcSecret: $vcSecret 
           ) {
             id
           }
         }      
     `;
 
-    await this.graphQLClient.request(query, {vcDid, issuerDid, holderDid, vcData});
+    await this.graphQLClient.request(query, {vcDid, issuerDid, holderDid, vcData, vcSecret});
   }
 
   async getUserVCs(userDid: Did): Promise<WalletsVCData[]> {
@@ -122,7 +124,23 @@ export class IdentixWalletsStorageClient extends BaseStorageWalletsClient implem
     return;
   }
 
-  async sign(userDid: Did, msg: string): Promise<string> {
-    return;
+  async sign(userDid: Did, message: string): Promise<{signed: string, signature: string}> {
+    const query = gql`
+      mutation signMessage(
+          $accountDid: String!
+          $message: String!
+        ) {  
+           signMessage(
+             accountDid: $accountDid,
+             message: $message
+          ) {
+            signed,
+            signature
+          }
+        }      
+    `;
+
+    const { signMessage } = await this.graphQLClient.request(query, {accountDid: userDid, message});
+    return { ...signMessage };
   }
 }
