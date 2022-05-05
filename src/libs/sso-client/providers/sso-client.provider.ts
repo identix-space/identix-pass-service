@@ -38,6 +38,8 @@ async function  ssoClientFactory(
   if (!ssoClientConfig || !ssoClientConfig.clientToken) {
     throw new Error(`SSO Client configuration is invalid!`);
   }
+  const ssoService = new SsoService(ssoClientConfig.ssoGraphqlApiUrl);
+  ssoClientService.init(ssoService);
 
   return {
     validateUserSession: async (userSessionDid: Did): Promise<Did> => {
