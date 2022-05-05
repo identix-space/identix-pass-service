@@ -16,3 +16,10 @@ export interface IVcBrokersProvider {
 }
 
 export type IVcBrokersFactory = (brokersStrategy: BrokersStrategies) => IVcBrokersProvider;
+
+export class ClaimsGroup {
+  hmacHigh_claimGroup: Buffer;
+  hmacHigh_groupDid: Buffer;
+  signHighPart: Buffer;
+  signLowPart: Buffer;
+}

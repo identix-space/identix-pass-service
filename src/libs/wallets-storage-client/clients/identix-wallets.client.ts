@@ -4,6 +4,7 @@ import {Did, VerificationStatuses} from "@/libs/vc-brokerage/types";
 import {BaseStorageWalletsClient} from "@/libs/wallets-storage-client/clients/base-storage-wallets.client";
 import {KeyValueType} from "@/libs/common/types";
 import {faker} from "@faker-js/faker";
+import {ClaimsGroup} from "@/libs/vc-brokerage/components/vc-brokers/types";
 
 export class IdentixWalletsStorageClient extends BaseStorageWalletsClient implements IWalletsStorageClient {
   private graphQLClient: GraphQLClient;
@@ -142,5 +143,22 @@ export class IdentixWalletsStorageClient extends BaseStorageWalletsClient implem
 
     const { signMessage } = await this.graphQLClient.request(query, {accountDid: userDid, message});
     return { ...signMessage };
+  }
+
+  public async issuerVC(claims: ClaimsGroup[], issuerDid: Did): Promise<Did> {
+    const query = gql`
+      mutation issuerVC(
+          $claims: [ClaimsGroup!]!
+          $issuerDid: String!
+        ) {  
+           issuerVC(
+             claims: $claims,
+             issuerDid: $issuerDid
+          ) 
+        }      
+    `;
+
+    const { issuerVC: vcDid } = await this.graphQLClient.request(query, {claims, issuerDid});
+    return vcDid;
   }
 }
