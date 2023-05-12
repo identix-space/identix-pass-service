@@ -5,6 +5,7 @@ import {AuthenticationService} from "../services/authentication.service";
 import {Did} from "@/libs/vc-brokerage/types";
 import {Headers} from "@/modules/authentication/types";
 import {Request} from 'express';
+import { Account } from '@/libs/sso-client/types';
 
 interface ExtendedRequest extends Request {
   userDid: Did;
@@ -18,7 +19,7 @@ export class SsoStrategy extends PassportStrategy(Strategy, 'sso') {
     this.authorizationTokenHeaderName = process.env.AUTHORIZATION_TOKEN_HEADER_NAME || "authorization";
   }
 
-  async validate(request: ExtendedRequest): Promise<Did> {
+  async validate(request: ExtendedRequest): Promise<Account> {
     const headers = this.getHeaders(request);
 
     if (!headers || !headers[this.authorizationTokenHeaderName]) {
@@ -26,15 +27,16 @@ export class SsoStrategy extends PassportStrategy(Strategy, 'sso') {
     }
 
     const userSessionDid = String(headers[this.authorizationTokenHeaderName]);
-    const userDid = await this.authService.validateUserSession(userSessionDid);
+    const user = await this.authService.validateUserSession(userSessionDid);
 
-    if (!userDid) {
+    if (!user) {
       throw new UnauthorizedException();
     }
 
-    request.userDid = userDid;
+    console.log(user);
+    request.userDid = `${user.id}`;
 
-    return userDid;
+    return user;
   }
 
   getHeaders(request: Request): Headers {

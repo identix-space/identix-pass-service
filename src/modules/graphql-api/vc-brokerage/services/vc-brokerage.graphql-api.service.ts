@@ -42,7 +42,7 @@ export class VCBrokerageGraphqlApiService {
       await this.agentsSessionsRegistry.createAgentSession(holderDid);
     }
 
-    await issuerAgent.issuerVc(issuerDid, holderDid, vcTypeDid, vcParams);
+    await issuerAgent.issuerVc(issuerDid, holderDid, vcTypeDid, vcParams); 
 
     return true;
   }

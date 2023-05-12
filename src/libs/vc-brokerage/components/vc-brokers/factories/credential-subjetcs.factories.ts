@@ -98,3 +98,188 @@ export function credentialSubjectProofOfResidency(holderDid: string, params: Key
     ]
   };
 }
+
+export function credentialSubjectEmiratesId(holderDid: string, params: KeyValueType): KeyValueType {
+  return {
+    "groups": [
+      {
+        "id": "namesAR",
+        "claims": [
+          {
+            "subject": holderDid,
+            "predicate": "https://schemas.identix.space/emiratesid/first_name",
+            "object": get(params, 'firstNameAR')
+          },
+          {
+            "subject": holderDid,
+            "predicate": "https://schemas.identix.space/emiratesid/last_name",
+            "object": get(params, 'lastNameAR')
+          },
+        ],
+        "signature": ""
+      },
+      {
+        "id": "namesEN",
+        "claims": [
+          {
+            "subject": holderDid,
+            "predicate": "https://schemas.identix.space/emiratesid/first_name",
+            "object": get(params, 'firstNameEN')
+          },
+          {
+            "subject": holderDid,
+            "predicate": "https://schemas.identix.space/emiratesid/last_name",
+            "object": get(params, 'lastNameEN')
+          },
+        ],
+        "signature": ""
+      },
+      {
+        "id": "gender",
+        "claims": [
+          {
+            "subject": holderDid,
+            "predicate": "https://schemas.identix.space/emiratesid/gender",
+            "object": get(params, 'gender')
+          },
+        ],
+        "signature": ""
+      },
+      {
+        "id": "nationalityAR",
+        "claims": [
+          {
+            "subject": holderDid,
+            "predicate": "https://schemas.identix.space/emiratesid/nationality",
+            "object": get(params, 'nationalityAR')
+          },
+        ],
+        "signature": ""
+      },
+      {
+        "id": "nationalityEN",
+        "claims": [
+          {
+            "subject": holderDid,
+            "predicate": "https://schemas.identix.space/emiratesid/nationality",
+            "object": get(params, 'nationalityEN')
+          },
+        ],
+        "signature": ""
+      },
+      {
+        "id": "id_card",
+        "claims": [
+          {
+            "subject": holderDid,
+            "predicate": "https://schemas.identix.space/emiratesid/idcard_issuance_date",
+            "object": get(params, 'idcardIssuanceDate')
+          },
+          {
+            "subject": holderDid,
+            "predicate": "https://schemas.identix.space/emiratesid/idcard_expiration_date",
+            "object": get(params, 'idcardExpirationDate')
+          },
+          {
+            "subject": holderDid,
+            "predicate": "https://schemas.identix.space/emiratesid/idcard_issuer",
+            "object": get(params, 'idcardIssuer')
+          }
+        ],
+        "signature": ""
+      }
+    ]
+  };
+}
+
+export function credentialSubjectRealEstate(holderDid: string, params: KeyValueType): KeyValueType {
+  return {
+    "groups": [
+      {
+        "id": "titledeedid",
+        "claims": [
+          {
+            "subject": holderDid,
+            "predicate": "https://schemas.identix.space/realestate_v1/titledeedid",
+            "object": get(params, 'titledeedid')
+          }
+        ]
+      },
+      {
+        "id": "address",
+        "claims": [
+          {
+            "subject": holderDid,
+            "predicate": "https://schemas.identix.space/realestate_v1/city",
+            "object": get(params, 'city')
+          },
+          {
+            "subject": holderDid,
+            "predicate": "https://schemas.identix.space/realestate_v1/district",
+            "object": get(params, 'district')
+          },
+          {
+            "subject": holderDid,
+            "predicate": "https://schemas.identix.space/realestate_v1/address",
+            "object": get(params, 'address')
+          },
+        ]
+      },
+      {
+        "id": "features",
+        "claims": [
+          {
+            "subject": holderDid,
+            "predicate": "https://schemas.identix.space/realestate_v1/type",
+            "object": get(params, 'type')
+          },
+          {
+            "subject": holderDid,
+            "predicate": "https://schemas.identix.space/realestate_v1/bedrooms",
+            "object": get(params, 'bedrooms')
+          },
+          {
+            "subject": holderDid,
+            "predicate": "https://schemas.identix.space/realestate_v1/livingspace",
+            "object": get(params, 'livingspace')
+          }
+        ]
+      },
+      {
+        "id": "ownership",
+        "claims": [
+          {
+            "subject": holderDid,
+            "predicate": "https://schemas.identix.space/realestate_v1/owner",
+            "object": get(params, 'owner')
+          },
+          {
+            "subject": holderDid,
+            "predicate": "https://schemas.identix.space/realestate_v1/ownership_begin_date",
+            "object": get(params, 'ownership_begin_date')
+          }
+        ]
+      },
+      {
+        "id": "authority",
+        "claims": [
+          {
+            "subject": holderDid,
+            "predicate": "https://schemas.identix.space/realestate_v1/issuing_institution",
+            "object": get(params, 'issuing_institution')
+          },
+          {
+            "subject": holderDid,
+            "predicate": "https://schemas.identix.space/realestate_v1/issuance_date",
+            "object": get(params, 'issuance_date')
+          },
+          {
+            "subject": holderDid,
+            "predicate": "https://schemas.identix.space/realestate_v1/certificate_id",
+            "object": get(params, 'certificate_id')
+          }
+        ]
+      }
+    ]
+  };
+}

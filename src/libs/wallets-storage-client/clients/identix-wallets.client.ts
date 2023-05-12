@@ -1,5 +1,5 @@
 import { gql, GraphQLClient } from 'graphql-request'
-import {IWalletsStorageClient, WalletsVCData} from "@/libs/wallets-storage-client/types";
+import {IWalletsStorageClient, WalletsVCData, ClaimsGroup} from "@/libs/wallets-storage-client/types";
 import {Did, VerificationStatuses} from "@/libs/vc-brokerage/types";
 import {BaseStorageWalletsClient} from "@/libs/wallets-storage-client/clients/base-storage-wallets.client";
 import {KeyValueType} from "@/libs/common/types";
@@ -12,6 +12,25 @@ export class IdentixWalletsStorageClient extends BaseStorageWalletsClient implem
     super();
     const {walletsStorageUrl, walletsApiToken} = params;
     this.graphQLClient = new GraphQLClient(walletsStorageUrl, { headers: {Authorization: walletsApiToken}});
+  }
+
+  public async issuerVC(): Promise<string> {
+    const query = gql`
+      mutation issuerVC(
+          $claims: [ClaimsGroup!]!
+          $issuerDid: String!
+        ) {  
+          issuerVC(
+            claims: $claims,
+            issuerDid: $issuerDid
+          )
+        }      
+    `;
+
+    const data = await this.graphQLClient.request(query, {
+      claims: [{hmacHigh_claimGroup: "", hmacHigh_groupDid: "", signHighPart: "", signLowPart: ""}], issuerDid: "did:identix:a6kdgsiXvN0Gk2bgaNFO5o0WsCramU8dDe0BQn0P7zg6pGF6iNXre0aJnVfMh39e"
+    });
+    return data;
   }
 
   public async getOrCreateAccount(params: KeyValueType): Promise<Did[]> {

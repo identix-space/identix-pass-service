@@ -3,11 +3,11 @@ import {ConfigService} from '@nestjs/config';
 import {existsSync, readFile} from 'fs';
 import {promisify} from 'util';
 
-import {SSOClient, ISSOClient, SSOClientConfiguration} from "@/libs/sso-client/types";
+import {SSOClient, ISSOClient, SSOClientConfiguration, Account} from "@/libs/sso-client/types";
 import {LoggingService} from "@/libs/logging/services/logging.service";
 import {Did} from "@/libs/vc-brokerage/types";
 import {SsoClientService} from "@/libs/sso-client/services/sso-client.service";
-import {SsoService} from "identix-sso-client-js";
+import {IdentixSSOClient} from "@/libs/sso-client/clients/identix-sso.client";
 import {MockIdentixSsoClientJsService} from "@/libs/sso-client/mocks/identix-sso-client-js.mock";
 
 const readFileAsync = promisify(readFile);
@@ -28,7 +28,7 @@ export const SSOClientProvider = {
   ],
 };
 
-async function  ssoClientFactory(
+async function ssoClientFactory(
   config: ConfigService,
   logger: LoggingService,
   ssoClientService: SsoClientService,
@@ -38,11 +38,11 @@ async function  ssoClientFactory(
   if (!ssoClientConfig || !ssoClientConfig.clientToken) {
     throw new Error(`SSO Client configuration is invalid!`);
   }
-  const ssoService = new SsoService(ssoClientConfig.ssoGraphqlApiUrl);
+  const ssoService = new IdentixSSOClient(ssoClientConfig);
   ssoClientService.init(ssoService);
 
   return {
-    validateUserSession: async (userSessionDid: Did): Promise<Did> => {
+    validateUserSession: async (userSessionDid: Did): Promise<Account> => {
       return ssoClientService.validateUserSession(ssoClientConfig.clientToken, userSessionDid);
     }
   }

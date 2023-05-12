@@ -7,6 +7,7 @@ import {
   AgentsSessionsRegistry,
   IAgentsSessionsRegistry
 } from "@/libs/vc-brokerage/components/agents-sessions-registry/types";
+import { Account } from "@/libs/sso-client/types";
 
 @UseGuards(SsoAuthGuard)
 @Resolver('Users')
@@ -26,8 +27,8 @@ export class UsersGraphqlApiResolvers {
     return this.usersService.checkAccountExists(did);
   }
 
-  @Query(returns => String)
-  async whoami(@Context('req') req: { userDid?: string }): Promise<Did> {
-    return req?.userDid;
+  @Query(returns => Account)
+  async whoami(@Context('req') req: { user?: Account }): Promise<Account> {
+    return req?.user;
   }
 }
