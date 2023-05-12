@@ -11,6 +11,7 @@ export const WalletsStorageClient = 'WALLETS_STORAGE_CLIENT';
 
 export interface IWalletsStorageClient {
   getOrCreateAccount: (params: KeyValueType) => Promise<Did[]>;
+  issuerVC: () => Promise<string>;
   saveVC: (vcDid: Did, issuerDid: Did, holderDid: Did, vcData: string, vcSecret) => Promise<void>;
   getUserVCs: (userDid: Did) =>  Promise<WalletsVCData[]>;
   getVC: (vcDid: Did) => Promise<WalletsVCData>;
@@ -34,4 +35,11 @@ export interface WalletsVCData {
     verifierDid: Did,
     verificationStatus: VerificationStatuses
   }[]
+}
+
+export interface ClaimsGroup {
+  macHigh_claimGroup: string,
+  hmacHigh_groupDid: string,
+  signHighPart: string,
+  signLowPart: string
 }

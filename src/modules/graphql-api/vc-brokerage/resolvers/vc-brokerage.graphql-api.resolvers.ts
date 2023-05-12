@@ -4,6 +4,7 @@ import {UseGuards} from "@nestjs/common";
 import {SsoAuthGuard} from "@/modules/authentication/guards/sso-auth.guard";
 import {AgentsRoles, Did, EventLogEntry, VC, VerificationStatuses} from "@/libs/vc-brokerage/types";
 import {VcTypeInfo} from "../types";
+import { Account } from '@/libs/sso-client/types';
 
 @UseGuards(SsoAuthGuard)
 @Resolver('VCBrokerage')
@@ -14,8 +15,8 @@ export class VcBrokerageGraphqlApiResolvers {
   }
 
   @Query(returns => [VcTypeInfo])
-  async getVcTypes(@Context('req') req: { userDid?: string }) {
-    return this.vcBrokerageGraphqlAPIService.getVcTypes(req?.userDid);
+  async getVcTypes(@Context('req') req: { user?: Account }) {
+    return this.vcBrokerageGraphqlAPIService.getVcTypes(req?.user.did);
   }
 
   @Mutation(returns => Boolean)

@@ -5,7 +5,7 @@ import {IMessagingClient} from "@/libs/messaging/types";
 import {IVcScheme, IVcSchemesClient} from "@/libs/vc-brokerage/components/vc-schemes/types";
 import {KeyValueType} from "@/libs/common/types";
 import {vcTemplate} from "../constants/vc-template";
-import {credentialSubjectStateId, credentialSubjectProofOfResidency} from "../factories/credential-subjetcs.factories";
+import {credentialSubjectStateId, credentialSubjectProofOfResidency, credentialSubjectEmiratesId} from "../factories/credential-subjetcs.factories";
 
 import hmac from 'js-crypto-hmac';
 import jseu from 'js-encoding-utils';
@@ -83,7 +83,12 @@ export class SimpleBrokerService implements IVcBroker{
         credentialSubjectHolder = credentialSubjectStateId;
       } else if (vcTypeScheme.key === 'PROOF_OF_RESIDENCY') {
         credentialSubjectHolder = credentialSubjectProofOfResidency;
-      } else {
+      } else if (vcTypeScheme.key === 'EMIRATES_ID') {
+        credentialSubjectHolder = credentialSubjectEmiratesId;
+      } else if (vcTypeScheme.key === 'REAL_ESTATE') {
+        credentialSubjectHolder = credentialSubjectEmiratesId;
+      } 
+      else {
         throw new BadRequestException('Unknown VC type')
       }
 
