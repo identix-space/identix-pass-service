@@ -61,8 +61,7 @@ export class VcBrokerageGraphqlApiResolvers {
   async verifyVC(
     @Context('req') req: { userDid?: string },
     @Args('vcDid', {type: () => String}) vcDid: Did,
-    @Args('verificationStatus',
-      {type: () => String}) verificationStatus: VerificationStatuses): Promise<boolean>
+    @Args('verificationStatus', {type: () => String}) verificationStatus: VerificationStatuses): Promise<boolean>
   {
     return this.vcBrokerageGraphqlAPIService.verifyVc(req?.userDid, vcDid, verificationStatus);
   }
