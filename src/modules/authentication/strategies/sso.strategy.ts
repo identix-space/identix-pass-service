@@ -33,8 +33,7 @@ export class SsoStrategy extends PassportStrategy(Strategy, 'sso') {
       throw new UnauthorizedException();
     }
 
-    console.log(user);
-    request.userDid = `${user.id}`;
+    request.userDid = user.did;
 
     return user;
   }
