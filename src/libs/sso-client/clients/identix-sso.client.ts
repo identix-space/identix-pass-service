@@ -15,9 +15,26 @@ export class IdentixSSOClient {
       query whoami {  
         whoami {
           id
+          createdAt
+          updatedAt
+          status
+          roles
+          avatarUrl
+          sessions {
+            id
+            createdAt
+            updatedAt
+            accountId
+            ipAddr
+            expiresAt
+          }
           did
           connections {
             id
+            uid
+            accountId
+            createdAt
+            updatedAt
             otherData
           }
         }
