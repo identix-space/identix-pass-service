@@ -11,8 +11,7 @@ import { Account } from '@/libs/sso-client/types';
 export class VcBrokerageGraphqlApiResolvers {
   constructor(
     private vcBrokerageGraphqlAPIService: VCBrokerageGraphqlApiService,
-  ) {
-  }
+  ) {}
 
   @Query(returns => [VcTypeInfo])
   async getVcTypes(@Context('req') req: { user?: Account }) {
