@@ -14,10 +14,10 @@ export class IdentixWalletsStorageClient extends BaseStorageWalletsClient implem
     this.graphQLClient = new GraphQLClient(walletsStorageUrl, { headers: {Authorization: walletsApiToken}});
   }
 
-  public async issueVC(id): Promise<string> {
+  public async issueVC(id: number): Promise<string> {
     const query = gql`
       mutation issueVC(
-          $id: number!
+          $id: ID!
         ) {  
           issueVC(
             id: $id
