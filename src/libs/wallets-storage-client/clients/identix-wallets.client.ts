@@ -14,22 +14,18 @@ export class IdentixWalletsStorageClient extends BaseStorageWalletsClient implem
     this.graphQLClient = new GraphQLClient(walletsStorageUrl, { headers: {Authorization: walletsApiToken}});
   }
 
-  public async issuerVC(): Promise<string> {
+  public async issueVC(id): Promise<string> {
     const query = gql`
-      mutation issuerVC(
-          $claims: [ClaimsGroup!]!
-          $issuerDid: String!
+      mutation issueVC(
+          $id: Number!
         ) {  
-          issuerVC(
-            claims: $claims,
-            issuerDid: $issuerDid
+          issueVC(
+            id: $id
           )
         }      
     `;
 
-    const data = await this.graphQLClient.request(query, {
-      claims: [{hmacHigh_claimGroup: "", hmacHigh_groupDid: "", signHighPart: "", signLowPart: ""}], issuerDid: "did:identix:a6kdgsiXvN0Gk2bgaNFO5o0WsCramU8dDe0BQn0P7zg6pGF6iNXre0aJnVfMh39e"
-    });
+    const data = await this.graphQLClient.request(query, {id});
     return data;
   }
 
@@ -37,7 +33,7 @@ export class IdentixWalletsStorageClient extends BaseStorageWalletsClient implem
     return [`did:ever:user:${faker.random.alphaNumeric(30)}`];
   }
 
-  public async saveVC(vcDid: Did, issuerDid: Did, holderDid: Did, vcData: string, vcSecret: string): Promise<void> {
+  public async saveVC(vcDid: Did, issuerDid: Did, holderDid: Did, vcData: string, vcSecret: string): Promise<number> {
     const query = gql`
       mutation saveVC(
           $vcDid: String!
@@ -58,7 +54,9 @@ export class IdentixWalletsStorageClient extends BaseStorageWalletsClient implem
         }      
     `;
 
-    await this.graphQLClient.request(query, {vcDid, issuerDid, holderDid, vcData, vcSecret});
+    const {id} = await this.graphQLClient.request(query, {vcDid, issuerDid, holderDid, vcData, vcSecret});
+    
+    return id;
   }
 
   async getUserVCs(userDid: Did): Promise<WalletsVCData[]> {
