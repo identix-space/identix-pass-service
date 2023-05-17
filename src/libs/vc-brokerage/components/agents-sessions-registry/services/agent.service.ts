@@ -21,14 +21,16 @@ export class AgentService {
     return this.vcSchemes.getSchemes({ userDid });
   }
 
-  async issuerVc(issuerDid: Did, holderDid: Did, vcTypeDid: Did, vcParams: string): Promise<Did> {
+  async issueVC(issuerDid: Did, holderDid: Did, vcTypeDid: Did, vcParams: string): Promise<Did> {
      const vcTypeScheme: IVcScheme = this.vcSchemes.getSchemes({ vcTypeDid }).shift();
      if (!vcTypeScheme) {
        throw new Error(`Unknown vcType scheme. Params: ${JSON.stringify({vcTypeDid})}`);
      }
      const {vc, vcSecret} = await this.vcBroker.buildVc(issuerDid, holderDid, vcTypeScheme, vcParams);
 
-     await this.walletsStorageClient.saveVC(vc.vcDid, issuerDid, holderDid, JSON.stringify(vc), vcSecret);
+     const id = await this.walletsStorageClient.saveVC(vc.vcDid, issuerDid, holderDid, JSON.stringify(vc), vcSecret);
+     const vcDid = await this.walletsStorageClient.issueVC(id);
+     console.log(vcDid);
 
      const eventLog = new EventLogEntity();
      eventLog.eventType = EventTypes.ISSUER_VC;

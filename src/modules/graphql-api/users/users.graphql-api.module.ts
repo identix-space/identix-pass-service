@@ -6,12 +6,14 @@ import {LoggingModule} from "@/libs/logging/logging.module";
 import {UsersGraphqlApiService} from "@/modules/graphql-api/users/services/users.graphql-api.service";
 import {UsersGraphqlApiResolvers} from "@/modules/graphql-api/users/resolvers/users.graphql-api.resolvers";
 import {AgentsSessionsRegistryModule} from "@/libs/vc-brokerage/components/agents-sessions-registry/agents-sessions-registry.module";
+import { SsoClientModule } from '@/libs/sso-client/sso-client.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([UsersEntity]),
     LoggingModule.forRoot({serviceName: 'Users GraphQL module'}),
-    AgentsSessionsRegistryModule
+    AgentsSessionsRegistryModule,
+    SsoClientModule
   ],
   providers: [UsersGraphqlApiResolvers, UsersGraphqlApiService],
   exports: [UsersGraphqlApiService]

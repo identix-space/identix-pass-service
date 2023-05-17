@@ -4,29 +4,29 @@ import {UseGuards} from "@nestjs/common";
 import {SsoAuthGuard} from "@/modules/authentication/guards/sso-auth.guard";
 import {AgentsRoles, Did, EventLogEntry, VC, VerificationStatuses} from "@/libs/vc-brokerage/types";
 import {VcTypeInfo} from "../types";
+import { Account } from '@/libs/sso-client/types';
 
 @UseGuards(SsoAuthGuard)
 @Resolver('VCBrokerage')
 export class VcBrokerageGraphqlApiResolvers {
   constructor(
     private vcBrokerageGraphqlAPIService: VCBrokerageGraphqlApiService,
-  ) {
-  }
+  ) {}
 
   @Query(returns => [VcTypeInfo])
-  async getVcTypes(@Context('req') req: { userDid?: string }) {
-    return this.vcBrokerageGraphqlAPIService.getVcTypes(req?.userDid);
+  async getVcTypes(@Context('req') req: { user?: Account }) {
+    return this.vcBrokerageGraphqlAPIService.getVcTypes(req?.user.did);
   }
 
   @Mutation(returns => Boolean)
-  async issuerVC(
+  async issueVC(
     @Context('req') req: { userDid?: string },
     @Args('holderDid', {type: () => String}) holderDid: string,
     @Args('vcTypeDid', {type: () => String}) vcTypeDid: string,
     @Args('vcParams', {type: () => String}) vcParams: string
   ): Promise<boolean>
   {
-    return this.vcBrokerageGraphqlAPIService.issuerVc(req?.userDid, holderDid, vcTypeDid, vcParams);
+    return this.vcBrokerageGraphqlAPIService.issueVC(req?.userDid, holderDid, vcTypeDid, vcParams);
   }
 
   @Query(returns => [VC])
@@ -60,8 +60,7 @@ export class VcBrokerageGraphqlApiResolvers {
   async verifyVC(
     @Context('req') req: { userDid?: string },
     @Args('vcDid', {type: () => String}) vcDid: Did,
-    @Args('verificationStatus',
-      {type: () => String}) verificationStatus: VerificationStatuses): Promise<boolean>
+    @Args('verificationStatus', {type: () => String}) verificationStatus: VerificationStatuses): Promise<boolean>
   {
     return this.vcBrokerageGraphqlAPIService.verifyVc(req?.userDid, vcDid, verificationStatus);
   }

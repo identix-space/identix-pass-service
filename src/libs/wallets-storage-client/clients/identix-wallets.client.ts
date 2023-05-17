@@ -1,5 +1,5 @@
 import { gql, GraphQLClient } from 'graphql-request'
-import {IWalletsStorageClient, WalletsVCData} from "@/libs/wallets-storage-client/types";
+import {IWalletsStorageClient, WalletsVCData, ClaimsGroup} from "@/libs/wallets-storage-client/types";
 import {Did, VerificationStatuses} from "@/libs/vc-brokerage/types";
 import {BaseStorageWalletsClient} from "@/libs/wallets-storage-client/clients/base-storage-wallets.client";
 import {KeyValueType} from "@/libs/common/types";
@@ -14,11 +14,26 @@ export class IdentixWalletsStorageClient extends BaseStorageWalletsClient implem
     this.graphQLClient = new GraphQLClient(walletsStorageUrl, { headers: {Authorization: walletsApiToken}});
   }
 
+  public async issueVC(id: number): Promise<string> {
+    const query = gql`
+      mutation issueVC(
+          $id: ID!
+        ) {  
+          issueVC(
+            id: $id
+          )
+        }      
+    `;
+
+    const data = await this.graphQLClient.request(query, {id});
+    return data;
+  }
+
   public async getOrCreateAccount(params: KeyValueType): Promise<Did[]> {
     return [`did:ever:user:${faker.random.alphaNumeric(30)}`];
   }
 
-  public async saveVC(vcDid: Did, issuerDid: Did, holderDid: Did, vcData: string, vcSecret: string): Promise<void> {
+  public async saveVC(vcDid: Did, issuerDid: Did, holderDid: Did, vcData: string, vcSecret: string): Promise<number> {
     const query = gql`
       mutation saveVC(
           $vcDid: String!
@@ -39,7 +54,9 @@ export class IdentixWalletsStorageClient extends BaseStorageWalletsClient implem
         }      
     `;
 
-    await this.graphQLClient.request(query, {vcDid, issuerDid, holderDid, vcData, vcSecret});
+    const {id} = await this.graphQLClient.request(query, {vcDid, issuerDid, holderDid, vcData, vcSecret});
+    
+    return id;
   }
 
   async getUserVCs(userDid: Did): Promise<WalletsVCData[]> {

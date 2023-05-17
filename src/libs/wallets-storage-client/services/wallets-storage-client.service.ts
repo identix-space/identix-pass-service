@@ -10,11 +10,15 @@ export class WalletsStorageService {
     protected readonly walletsStorageClient: IdentixWalletsStorageClient
   ) {}
 
+  public async issueVC(id: number): Promise<string> {
+    return this.walletsStorageClient.issueVC(id);
+  }
+
   public async getOrCreateAccount(params: KeyValueType): Promise<Did[]> {
     return this.walletsStorageClient.getOrCreateAccount(params);
   }
 
-  public async  saveVC(vcDid: Did, issuerDid: Did, holderDid: Did, vcData: string, vcSecret: string): Promise<void> {
+  public async saveVC(vcDid: Did, issuerDid: Did, holderDid: Did, vcData: string, vcSecret: string): Promise<number> {
     return this.walletsStorageClient.saveVC(vcDid, issuerDid, holderDid, vcData, vcSecret);
   }
 

@@ -1,4 +1,4 @@
-import {IWalletsStorageClient, WalletsVCData} from "@/libs/wallets-storage-client/types";
+import {ClaimsGroup, IWalletsStorageClient, WalletsVCData} from "@/libs/wallets-storage-client/types";
 import {Did, VerificationStatuses} from "@/libs/vc-brokerage/types";
 import { KeyValueType } from "@/libs/common/types";
 
@@ -9,7 +9,11 @@ export class BaseStorageWalletsClient implements IWalletsStorageClient {
     return;
   }
 
-  public async saveVC(vcDid: Did, issuerDid: Did, holderDid: Did, vcData: string, vcSecret: string): Promise<void> {
+  public async issueVC(id: number): Promise<string> {
+    return;
+  }
+
+  public async saveVC(vcDid: Did, issuerDid: Did, holderDid: Did, vcData: string, vcSecret: string): Promise<number> {
     return;
   }
 

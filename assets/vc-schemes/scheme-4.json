@@ -1,0 +1,13 @@
+{
+    "did": "did:ever:real-estate-12345",
+    "key": "REAL_ESTATE",
+    "description": "VC Real Estate scheme",
+    "scheme": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "https://example.com/product.schema.json",
+      "title": "Product",
+      "type": "object",
+      "description": "A product in the catalog"
+    }
+  }
+  
