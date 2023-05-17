@@ -31,7 +31,7 @@ export class VCBrokerageGraphqlApiService {
     return vcTypeSchemes.map(sch => ({vcTypeDid: sch.did, vcTypeTag: sch.key}));
   }
 
-  async issuerVc(issuerDid: Did, holderDid: Did, vcTypeDid: Did, vcParams: string): Promise<boolean> {
+  async issueVC(issuerDid: Did, holderDid: Did, vcTypeDid: Did, vcParams: string): Promise<boolean> {
     const issuerAgent = this.agentsSessionsRegistry.getAgent(issuerDid);
     if (!issuerAgent) {
       throw new Error('Issuer agent session not found');
@@ -42,7 +42,7 @@ export class VCBrokerageGraphqlApiService {
       await this.agentsSessionsRegistry.createAgentSession(holderDid);
     }
 
-    await issuerAgent.issuerVc(issuerDid, holderDid, vcTypeDid, vcParams); 
+    await issuerAgent.issueVC(issuerDid, holderDid, vcTypeDid, vcParams); 
 
     return true;
   }
