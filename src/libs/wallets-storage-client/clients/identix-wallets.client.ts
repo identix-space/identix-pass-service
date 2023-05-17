@@ -17,7 +17,7 @@ export class IdentixWalletsStorageClient extends BaseStorageWalletsClient implem
   public async issueVC(id: number): Promise<string> {
     const query = gql`
       mutation issueVC(
-          $id: ID!
+          $id: Int!
         ) {  
           issueVC(
             id: $id
