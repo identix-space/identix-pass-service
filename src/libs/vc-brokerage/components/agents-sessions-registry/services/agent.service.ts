@@ -29,6 +29,7 @@ export class AgentService {
      const {vc, vcSecret} = await this.vcBroker.buildVc(issuerDid, holderDid, vcTypeScheme, vcParams);
 
      const id = await this.walletsStorageClient.saveVC(vc.vcDid, issuerDid, holderDid, JSON.stringify(vc), vcSecret);
+     console.log('vcId', id);
      const vcDid = await this.walletsStorageClient.issueVC(id);
      console.log(vcDid);
 
