@@ -75,7 +75,7 @@ export class IdentixWalletsStorageClient extends BaseStorageWalletsClient implem
       }      
     `;
 
-    const {getUserVCs: vcc} = await this.graphQLClient.request(query, { userDid });
+    const {getUserVCs: vcc} = await this.graphQLClient.request(query, { userDid, page, limit });
     return vcc;
   }
 
