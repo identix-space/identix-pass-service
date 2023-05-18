@@ -59,10 +59,10 @@ export class IdentixWalletsStorageClient extends BaseStorageWalletsClient implem
     return saveVC.id;
   }
 
-  async getUserVCs(userDid: Did): Promise<WalletsVCData[]> {
+  async getUserVCs(userDid: Did, page: number, limit: number): Promise<WalletsVCData[]> {
     const query = gql`
-      query getUserVCs($userDid: String!) {  
-        getUserVCs(userDid: $userDid) {
+      query getUserVCs($userDid: String!, $page: Int, $limit: Int) {  
+        getUserVCs(userDid: $userDid, page: $page, limit: $limit) {
           vcDid,
           vcData,
           issuerDid,

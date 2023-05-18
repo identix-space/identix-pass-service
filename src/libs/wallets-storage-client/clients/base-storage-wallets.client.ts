@@ -17,7 +17,7 @@ export class BaseStorageWalletsClient implements IWalletsStorageClient {
     return;
   }
 
-  public async getUserVCs(userDid: Did): Promise<WalletsVCData[]> {
+  public async getUserVCs(userDid: Did, page: number, limit: number): Promise<WalletsVCData[]> {
     return
   }
 
