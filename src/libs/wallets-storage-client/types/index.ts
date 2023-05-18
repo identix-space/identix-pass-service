@@ -13,7 +13,7 @@ export interface IWalletsStorageClient {
   getOrCreateAccount: (params: KeyValueType) => Promise<Did[]>;
   issueVC: (id: number) => Promise<string>;
   saveVC: (vcDid: Did, issuerDid: Did, holderDid: Did, vcData: string, vcSecret) => Promise<number>;
-  getUserVCs: (userDid: Did) =>  Promise<WalletsVCData[]>;
+  getUserVCs: (userDid: Did, page: number, limit: number) =>  Promise<WalletsVCData[]>;
   getVC: (vcDid: Did) => Promise<WalletsVCData>;
   requestVcVerification: (vcDid: Did, verifierDid: Did) => Promise<boolean>;
   verifyVC: (vcDid: Did, verifierDid: Did, verificationStatus: VerificationStatuses) => Promise<boolean>;

@@ -64,7 +64,7 @@ export class VCBrokerageGraphqlApiService {
       throw new Error('User agent session not found');
     }
 
-    const userVCs = (await userAgent.getUserVCs(userDid)).map(wvc => JSON.parse(wvc.vcData));
+    const userVCs = (await userAgent.getUserVCs(userDid, page, limit)).map(wvc => JSON.parse(wvc.vcData));
 
     if (role) {
       return userVCs.filter(vc => this.checkUserHasRoleInVC(vc, userDid, role));
