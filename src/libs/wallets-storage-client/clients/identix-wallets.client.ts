@@ -59,10 +59,10 @@ export class IdentixWalletsStorageClient extends BaseStorageWalletsClient implem
     return saveVC.id;
   }
 
-  async getUserVCs(userDid: Did, page: number, limit: number): Promise<WalletsVCData[]> {
+  async getUserVCs(userDid: Did, vcType: string, page: number, limit: number): Promise<WalletsVCData[]> {
     const query = gql`
-      query getUserVCs($userDid: String!, $page: Int, $limit: Int) {  
-        getUserVCs(userDid: $userDid, page: $page, limit: $limit) {
+      query getUserVCs($userDid: String!, $vcType: String, $page: Int, $limit: Int) {  
+        getUserVCs(userDid: $userDid, vcType: $vcType, page: $page, limit: $limit) {
           vcDid,
           vcData,
           issuerDid,
@@ -75,7 +75,7 @@ export class IdentixWalletsStorageClient extends BaseStorageWalletsClient implem
       }      
     `;
 
-    const {getUserVCs: vcc} = await this.graphQLClient.request(query, { userDid, page, limit });
+    const {getUserVCs: vcc} = await this.graphQLClient.request(query, { userDid, vcType, page, limit });
     return vcc;
   }
 

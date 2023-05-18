@@ -22,8 +22,8 @@ export class WalletsStorageService {
     return this.walletsStorageClient.saveVC(vcDid, issuerDid, holderDid, vcData, vcSecret);
   }
 
-  async getUserVCs(userDid: Did, page: number, limit: number): Promise<WalletsVCData[]> {
-    return this.walletsStorageClient.getUserVCs(userDid, page, limit);
+  async getUserVCs(userDid: Did, vcType: string, page: number, limit: number): Promise<WalletsVCData[]> {
+    return this.walletsStorageClient.getUserVCs(userDid, vcType, page, limit);
   }
 
   async getVC(vcDid: Did): Promise<WalletsVCData> {
