@@ -58,13 +58,13 @@ export class VCBrokerageGraphqlApiService {
     return JSON.parse(vc.vcData);
   }
 
-  async getUserVCs(userDid: Did, role?: AgentsRoles, page?: number, limit?: number): Promise<VC[]> {
+  async getUserVCs(userDid: Did, vcType?: string, role?: AgentsRoles, page?: number, limit?: number): Promise<VC[]> {
     const userAgent = this.agentsSessionsRegistry.getAgent(userDid);
     if (!userAgent) {
       throw new Error('User agent session not found');
     }
 
-    const userVCs = (await userAgent.getUserVCs(userDid, page, limit)).map(wvc => JSON.parse(wvc.vcData));
+    const userVCs = (await userAgent.getUserVCs(userDid, vcType, page, limit)).map(wvc => JSON.parse(wvc.vcData));
 
     if (role) {
       return userVCs.filter(vc => this.checkUserHasRoleInVC(vc, userDid, role));

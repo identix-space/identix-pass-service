@@ -32,11 +32,12 @@ export class VcBrokerageGraphqlApiResolvers {
   @Query(returns => [VC])
   async getUserVCs(
     @Context('req') req: { userDid?: string },
+    @Args('vcType', {type: () => String, nullable: true}) vcType?: string,
     @Args('role', {type: () => AgentsRoles, nullable: true}) role?: AgentsRoles,
     @Args('page', {type: () => Int, nullable: true}) page?: number,
     @Args('limit', {type: () => Int, nullable: true}) limit?: number
   ) {
-    return this.vcBrokerageGraphqlAPIService.getUserVCs(req?.userDid, role, page, limit);
+    return this.vcBrokerageGraphqlAPIService.getUserVCs(req?.userDid, vcType, role, page, limit);
   }
 
   @Query(returns => VC)
