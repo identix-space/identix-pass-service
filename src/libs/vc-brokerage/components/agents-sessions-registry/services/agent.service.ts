@@ -67,14 +67,14 @@ export class AgentService {
     return true
   }
 
-  async verifyVc(vcDid: Did, verifierDid: Did, verificationStatus: VerificationStatuses): Promise<boolean> {
-    await this.walletsStorageClient.verifyVC(vcDid, verifierDid, verificationStatus);
+  async verifyVc(vcDid: Did, verificationData: string): Promise<boolean> {
+    await this.walletsStorageClient.verifyVC(vcDid, verificationData);
 
     const eventLog = new EventLogEntity();
     eventLog.eventType = EventTypes.VERIFICATED;
     eventLog.vcDid = vcDid;
     eventLog.ownerDid = this.agentDid;
-    eventLog.message = `Credentials verified. Data: ${JSON.stringify({verifier: verifierDid, status: verificationStatus})}`;
+    eventLog.message = `Credentials verified. Data: ${JSON.stringify({verificationData})}`;
 
     await this.eventLogRepository.save(eventLog);
 

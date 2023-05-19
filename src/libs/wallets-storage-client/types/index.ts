@@ -16,7 +16,7 @@ export interface IWalletsStorageClient {
   getUserVCs: (userDid: Did, vcType: string, page: number, limit: number) =>  Promise<WalletsVCData[]>;
   getVC: (vcDid: Did) => Promise<WalletsVCData>;
   requestVcVerification: (vcDid: Did, verifierDid: Did) => Promise<boolean>;
-  verifyVC: (vcDid: Did, verifierDid: Did, verificationStatus: VerificationStatuses) => Promise<boolean>;
+  verifyVC: (vcDid: Did, verificationData: string) => Promise<boolean>;
   generateVcDid: () => Promise<{vcDid: Did, vcSecret: string}>;
   sign: (userDid: Did, msg: string) => Promise<{signed: string, signature: string}>;
 }

@@ -86,19 +86,18 @@ export class VCBrokerageGraphqlApiService {
 
   async verifyVc(
     userDid: Did,
-    vcDid: Did,
-    verificationStatus: VerificationStatuses
+    verificationData: string
   ): Promise<boolean> {
     const userAgent = this.agentsSessionsRegistry.getAgent(userDid);
     if (!userAgent) {
       throw new Error('User agent session not found');
     }
 
-    await this.getVCAndAuthorize(vcDid, userDid, userAgent, AgentsRoles.verifier);
+    //await this.getVCAndAuthorize(vcDid, userDid, userAgent, AgentsRoles.verifier);
 
     const verifierDid = userDid;
 
-    return !!(await userAgent.verifyVc(vcDid, verifierDid, verificationStatus));
+    return true; //!!(await userAgent.verifyVc(vcDid, verifierDid, verificationStatus));
   }
 
   async getEventLog(userDid: Did): Promise<EventLogEntry[]> {
