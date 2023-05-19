@@ -117,7 +117,7 @@ export class IdentixWalletsStorageClient extends BaseStorageWalletsClient implem
     return true;
   }
 
-  async verifyVC(vcDid: Did, verifierDid: Did, verificationStatus: VerificationStatuses): Promise<boolean> {
+  async verifyVC(vcDid: Did, verificationData: string): Promise<boolean> {
     const query = gql`
       mutation verifyVc(
           $vcDid: String!
@@ -132,7 +132,7 @@ export class IdentixWalletsStorageClient extends BaseStorageWalletsClient implem
         }      
     `;
 
-    await this.graphQLClient.request(query, {vcDid, verifierDid, verificationStatus});
+    await this.graphQLClient.request(query, {vcDid});
 
     return true;
   }

@@ -34,8 +34,8 @@ export class WalletsStorageService {
     return this.walletsStorageClient.requestVcVerification(vcDid, verifierDid);
   }
 
-  async verifyVC(vcDid: Did, verifierDid: Did, verificationStatus: VerificationStatuses): Promise<boolean> {
-    return this.walletsStorageClient.verifyVC(vcDid, verifierDid, verificationStatus)
+  async verifyVC(vcDid: Did, verificationData: string): Promise<boolean> {
+    return this.walletsStorageClient.verifyVC(vcDid, verificationData)
   }
 
   async generateVcDid(): Promise<{vcDid: Did, vcSecret: string}> {

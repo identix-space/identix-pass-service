@@ -29,7 +29,7 @@ export class BaseStorageWalletsClient implements IWalletsStorageClient {
     return true
   }
 
-  async verifyVC(vcDid: Did, verifierDid: Did, verificationStatus: VerificationStatuses): Promise<boolean> {
+  async verifyVC(vcDid: Did, verificationData: string): Promise<boolean> {
     return true
   }
 
