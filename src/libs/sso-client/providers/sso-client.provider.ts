@@ -44,6 +44,9 @@ async function ssoClientFactory(
   return {
     validateUserSession: async (userSessionDid: Did): Promise<Account> => {
       return ssoClientService.validateUserSession(ssoClientConfig.clientToken, userSessionDid);
+    },
+    logout: async (userSessionDid: Did): Promise<boolean> => {
+      return ssoClientService.logout(userSessionDid);
     }
   }
 }

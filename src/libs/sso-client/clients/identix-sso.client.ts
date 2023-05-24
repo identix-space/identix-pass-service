@@ -1,6 +1,6 @@
 import { gql, GraphQLClient } from 'graphql-request'
 import {Did} from "@/libs/vc-brokerage/types";
-import { Account } from '../types';
+import { Account, AccountSession } from '../types';
 
 export class IdentixSSOClient {
   private graphQLClient: GraphQLClient;
@@ -43,5 +43,20 @@ export class IdentixSSOClient {
 
   const {whoami} = await this.graphQLClient.request(query, {}, {Authorization: userSessionDid});
     return whoami;
+  }
+
+  async logout(sessions: AccountSession[], userSessionDid: Did): Promise<boolean> {
+    const query = gql`
+      mutation logout($sessionIds: [Float!]!){
+        logout(sessionIds: $sessionIds)
+      }    
+    `;
+    const sessionIds = sessions.reduce((ac, cV) => {
+      ac.push(cV.id);
+      return ac;
+    }, []);
+
+    const { logout } = await this.graphQLClient.request(query, { sessionIds }, { Authorization: userSessionDid });
+    return logout;
   }
 }
