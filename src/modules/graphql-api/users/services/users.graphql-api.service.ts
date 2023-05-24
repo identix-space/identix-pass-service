@@ -4,11 +4,13 @@ import {
   AgentsSessionsRegistry,
   IAgentsSessionsRegistry
 } from "@/libs/vc-brokerage/components/agents-sessions-registry/types";
+import { ISSOClient, SSOClient } from "@/libs/sso-client/types";
 
 @Injectable()
 export class UsersGraphqlApiService {
   constructor(
-    @Inject(AgentsSessionsRegistry) private agentsSessionsRegistry: IAgentsSessionsRegistry
+    @Inject(AgentsSessionsRegistry) private agentsSessionsRegistry: IAgentsSessionsRegistry,
+    @Inject(SSOClient) private ssoClient: ISSOClient
   ) { }
 
   async checkAccountExists(did: Did): Promise<boolean> {
@@ -17,6 +19,10 @@ export class UsersGraphqlApiService {
 
   async getAllAccounts(): Promise<Did[]> {
     return this.agentsSessionsRegistry.getAllAgentsSessionsDids();
+  }
+
+  async ssoLogout(did: Did): Promise<boolean> {
+    return this.ssoClient.logout(did);
   }
 
   async deleteAgentSession(did: Did): Promise<void> {
