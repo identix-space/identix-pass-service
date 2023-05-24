@@ -1,5 +1,5 @@
-import {Inject, Injectable} from "@nestjs/common";
-import {Did} from "@/libs/vc-brokerage/types";
+import { Inject, Injectable } from "@nestjs/common";
+import { Did } from "@/libs/vc-brokerage/types";
 import {
   AgentsSessionsRegistry,
   IAgentsSessionsRegistry
@@ -9,7 +9,7 @@ import {
 export class UsersGraphqlApiService {
   constructor(
     @Inject(AgentsSessionsRegistry) private agentsSessionsRegistry: IAgentsSessionsRegistry
-  ) {}
+  ) { }
 
   async checkAccountExists(did: Did): Promise<boolean> {
     return !!this.agentsSessionsRegistry.getAgent(did);
@@ -18,4 +18,9 @@ export class UsersGraphqlApiService {
   async getAllAccounts(): Promise<Did[]> {
     return this.agentsSessionsRegistry.getAllAgentsSessionsDids();
   }
+
+  async deleteAgentSession(did: Did): Promise<void> {
+    return this.agentsSessionsRegistry.deleteAgentSession(did);
+  }
+
 }
