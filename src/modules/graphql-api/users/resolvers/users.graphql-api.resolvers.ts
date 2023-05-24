@@ -8,12 +8,11 @@ import {
   IAgentsSessionsRegistry
 } from "@/libs/vc-brokerage/components/agents-sessions-registry/types";
 import { Account } from "@/libs/sso-client/types";
-import { SsoClientService } from "@/libs/sso-client/services/sso-client.service";
 
 @UseGuards(SsoAuthGuard)
 @Resolver('Users')
 export class UsersGraphqlApiResolvers {
-  constructor(private usersService: UsersGraphqlApiService, private ssoClient: SsoClientService) {
+  constructor(private usersService: UsersGraphqlApiService) {
   }
 
   @Query(returns => [String])
