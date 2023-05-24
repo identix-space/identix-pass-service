@@ -45,7 +45,7 @@ export class IdentixSSOClient {
     return whoami;
   }
 
-  async logout(sessions: AccountSession[], userSessionDid: Did): Promise<boolean> {
+  async logout(sessions: AccountSession[], token: Did): Promise<boolean> {
     const query = gql`
       mutation logout($sessionIds: [Float!]!){
         logout(sessionIds: $sessionIds)
@@ -56,7 +56,7 @@ export class IdentixSSOClient {
       return ac;
     }, []);
 
-    const { logout } = await this.graphQLClient.request(query, { sessionIds }, { Authorization: userSessionDid });
+    const { logout } = await this.graphQLClient.request(query, { sessionIds }, { Authorization: token });
     return logout;
   }
 }

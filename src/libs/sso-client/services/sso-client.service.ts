@@ -20,12 +20,10 @@ export class SsoClientService implements ISSOClientService{
     return sessionTokenDid;
   }
 
-  public async logout(userSessionDid: Did): Promise<boolean> {
-    console.log(userSessionDid);
-    console.log(this.didSessionsStorage);
-    const { user } = this.didSessionsStorage.get(userSessionDid);
-    this.didSessionsStorage.delete(userSessionDid);
-    return await this.ssoService.logout(user.sessions, userSessionDid);
+  public async logout(token: Did): Promise<boolean> {
+    const { user } = this.didSessionsStorage.get(token);
+    this.didSessionsStorage.delete(token);
+    return await this.ssoService.logout(user.sessions, token);
   }
 
   public async validateUserSession(clientSessionDid: Did, userSessionDid: Did): Promise<Account> {

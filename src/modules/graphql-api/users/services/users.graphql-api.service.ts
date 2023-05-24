@@ -21,8 +21,8 @@ export class UsersGraphqlApiService {
     return this.agentsSessionsRegistry.getAllAgentsSessionsDids();
   }
 
-  async ssoLogout(did: Did): Promise<boolean> {
-    return this.ssoClient.logout(did);
+  async ssoLogout(token: Did): Promise<boolean> {
+    return this.ssoClient.logout(token);
   }
 
   async deleteAgentSession(did: Did): Promise<void> {
