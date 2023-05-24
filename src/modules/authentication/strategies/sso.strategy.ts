@@ -9,6 +9,7 @@ import { Account } from '@/libs/sso-client/types';
 
 interface ExtendedRequest extends Request {
   userDid: Did;
+  token: Did;
 }
 @Injectable()
 export class SsoStrategy extends PassportStrategy(Strategy, 'sso') {
@@ -34,6 +35,7 @@ export class SsoStrategy extends PassportStrategy(Strategy, 'sso') {
     }
 
     request.userDid = user.did;
+    request.token = userSessionDid;
 
     return user;
   }

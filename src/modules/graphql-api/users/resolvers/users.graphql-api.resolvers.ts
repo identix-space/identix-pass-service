@@ -33,8 +33,8 @@ export class UsersGraphqlApiResolvers {
   }
 
   @Query(returns => Boolean)
-  async logout(@Context('req') req: { user?: Account }): Promise<boolean> {
+  async logout(@Context('req') req: { user?: Account, token: Did }): Promise<boolean> {
     this.usersService.deleteAgentSession(req?.user.did);
-    return this.usersService.ssoLogout(req?.user.did);
+    return this.usersService.ssoLogout(req.token);
   }
 }
