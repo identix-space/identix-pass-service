@@ -26,6 +26,11 @@ export class SsoClientService implements ISSOClientService{
     return await this.ssoService.logout(user.sessions, token);
   }
 
+  public async deleteAccount(token: Did): Promise<boolean> {
+    this.didSessionsStorage.delete(token);
+    return await this.ssoService.deleteAccount(token);
+  }
+
   public async validateUserSession(clientSessionDid: Did, userSessionDid: Did): Promise<Account> {
     if (this.didSessionsStorage.has(userSessionDid)) {
       const session = this.didSessionsStorage.get(userSessionDid);
