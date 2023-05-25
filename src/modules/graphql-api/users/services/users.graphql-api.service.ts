@@ -25,6 +25,10 @@ export class UsersGraphqlApiService {
     return this.ssoClient.logout(token);
   }
 
+  async deleteAccount(token: Did): Promise<boolean> {
+    return this.ssoClient.deleteAccount(token);
+  }
+
   async deleteAgentSession(did: Did): Promise<void> {
     return this.agentsSessionsRegistry.deleteAgentSession(did);
   }

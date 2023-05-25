@@ -59,4 +59,14 @@ export class IdentixSSOClient {
     const { logout } = await this.graphQLClient.request(query, { sessionIds }, { Authorization: token });
     return logout;
   }
+
+  async deleteAccount(token: Did): Promise<boolean> {
+    const query = gql`
+      mutation deleteAccount{
+        deleteAccount
+      }    
+    `;
+    const { logout } = await this.graphQLClient.request(query, {}, { Authorization: token });
+    return logout;
+  }
 }

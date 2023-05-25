@@ -22,7 +22,8 @@ registerEnumType(AccountStatus, { name: 'AccountStatus', description: undefined 
 
 export interface ISSOClient {
   validateUserSession(userSessionDid: Did): Promise<Account>; // returns client Did or throw exception
-  logout(userSessionDid: Did): Promise<boolean>;
+  logout(token: Did): Promise<boolean>;
+  deleteAccount(token: Did): Promise<boolean>;
 }
 
 export interface ISSOClientService {

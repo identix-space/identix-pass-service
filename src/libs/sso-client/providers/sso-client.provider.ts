@@ -47,6 +47,9 @@ async function ssoClientFactory(
     },
     logout: async (token: Did): Promise<boolean> => {
       return ssoClientService.logout(token);
-    }
+    },
+    deleteAccount: async (token: Did): Promise<boolean> => {
+      return ssoClientService.deleteAccount(token);
+    },
   }
 }
