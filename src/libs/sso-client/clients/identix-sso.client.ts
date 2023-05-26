@@ -66,7 +66,7 @@ export class IdentixSSOClient {
         deleteAccount
       }    
     `;
-    const { logout } = await this.graphQLClient.request(query, {}, { Authorization: token });
-    return logout;
+    const { deleteAccount } = await this.graphQLClient.request(query, {}, { Authorization: token });
+    return deleteAccount;
   }
 }
