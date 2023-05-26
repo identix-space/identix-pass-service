@@ -1,6 +1,7 @@
 import {Did} from "@/libs/vc-brokerage/types";
 import {KeyValueType} from "@/libs/common/types";
 import {VerificationStatuses} from "@/libs/vc-brokerage/types";
+import {ClaimsGroup} from "@/libs/vc-brokerage/components/vc-brokers/types";
 
 
 export enum WalletsStorageKinds {
