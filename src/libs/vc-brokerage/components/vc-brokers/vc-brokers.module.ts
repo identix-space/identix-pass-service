@@ -6,13 +6,15 @@ import {VcBrokersProvider} from "@/libs/vc-brokerage/components/vc-brokers/provi
 import {ConfigModule} from "@nestjs/config";
 import {MessagingModule} from "@/libs/messaging/messaging.module";
 import {WalletsSrorageClientModule} from "@/libs/wallets-storage-client/wallets-srorage-client.module";
+import {VcSchemesModule} from "@/libs/vc-brokerage/components/vc-schemes/vc-schemes.module";
 
 @Module({
     imports: [
         ConfigModule.forRoot(),
         LoggingModule.forRoot({serviceName: 'VC Broker module'}),
         MessagingModule,
-        WalletsSrorageClientModule
+        WalletsSrorageClientModule,
+        VcSchemesModule
     ],
     providers: [VcBrokersProvider, SimpleBrokerService],
     exports: [VcBrokersProvider]

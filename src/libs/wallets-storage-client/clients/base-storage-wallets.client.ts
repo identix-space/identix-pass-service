@@ -1,7 +1,6 @@
 import {ClaimsGroup, IWalletsStorageClient, WalletsVCData} from "@/libs/wallets-storage-client/types";
 import {Did, VerificationStatuses} from "@/libs/vc-brokerage/types";
 import { KeyValueType } from "@/libs/common/types";
-import {ClaimsGroup} from "@/libs/vc-brokerage/components/vc-brokers/types";
 
 export class BaseStorageWalletsClient implements IWalletsStorageClient {
   constructor() {}
