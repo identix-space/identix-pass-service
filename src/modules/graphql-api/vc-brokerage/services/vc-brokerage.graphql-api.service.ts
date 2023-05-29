@@ -58,7 +58,7 @@ export class VCBrokerageGraphqlApiService {
     return JSON.parse(vc.vcData);
   }
 
-  async getUserVCs(userDid: Did, vcType?: string, role?: AgentsRoles, page?: number, limit?: number): Promise<VC[]> {
+  async getUserVCs(userDid: Did, vcType?: string, role?: AgentsRoles, page: number = 1, limit: number = 100): Promise<VC[]> {
     const userAgent = this.agentsSessionsRegistry.getAgent(userDid);
     if (!userAgent) {
       throw new Error('User agent session not found');
@@ -66,7 +66,7 @@ export class VCBrokerageGraphqlApiService {
 
     const userVCs = (await userAgent.getUserVCs(userDid, vcType)).slice((page - 1) * limit, page*limit).map(wvc => {
       const vc = JSON.parse(wvc.vcData);
-      vc.blockchain = `${process.env.VENOM_LINK}/account/${vc.vcDid}`;
+      vc.blockchain = `${process.env.VENOM_LINK}/accounts/${vc.vcDid}`;
       return vc;
     });
 
