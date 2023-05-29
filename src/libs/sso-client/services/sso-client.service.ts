@@ -32,6 +32,7 @@ export class SsoClientService implements ISSOClientService{
   }
 
   public async validateUserSession(clientSessionDid: Did, userSessionDid: Did): Promise<Account> {
+    console.log(userSessionDid);
     if (this.didSessionsStorage.has(userSessionDid)) {
       const session = this.didSessionsStorage.get(userSessionDid);
       const sessionCreatedAt = session.createdAt;
