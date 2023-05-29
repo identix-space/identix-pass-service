@@ -23,6 +23,8 @@ export class SsoStrategy extends PassportStrategy(Strategy, 'sso') {
   async validate(request: ExtendedRequest): Promise<Account> {
     const headers = request.headers;
 
+    console.log(headers);
+
     if (!headers || !headers.authorization) {
       throw new UnauthorizedException();
     }
