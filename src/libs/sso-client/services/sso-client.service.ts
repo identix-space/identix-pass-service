@@ -44,7 +44,9 @@ export class SsoClientService implements ISSOClientService{
 
     let user;
     try {
+      console.log(userSessionDid);
       user = await this.ssoService.whoami(userSessionDid);
+      console.log(user);
     } catch (e) {
       throw e;
     }
