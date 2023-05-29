@@ -1,9 +1,10 @@
 import { gql, GraphQLClient } from 'graphql-request'
-import {IWalletsStorageClient, WalletsVCData, ClaimsGroup} from "@/libs/wallets-storage-client/types";
+import {IWalletsStorageClient, WalletsVCData} from "@/libs/wallets-storage-client/types";
 import {Did, VerificationStatuses} from "@/libs/vc-brokerage/types";
 import {BaseStorageWalletsClient} from "@/libs/wallets-storage-client/clients/base-storage-wallets.client";
 import {KeyValueType} from "@/libs/common/types";
 import {faker} from "@faker-js/faker";
+import {ClaimsGroup} from "@/libs/vc-brokerage/components/vc-brokers/types";
 
 export class IdentixWalletsStorageClient extends BaseStorageWalletsClient implements IWalletsStorageClient {
   private graphQLClient: GraphQLClient;
@@ -14,19 +15,21 @@ export class IdentixWalletsStorageClient extends BaseStorageWalletsClient implem
     this.graphQLClient = new GraphQLClient(walletsStorageUrl, { headers: {Authorization: walletsApiToken}});
   }
 
-  public async issueVC(id: number): Promise<string> {
+  public async issueVC(claimsGroup: ClaimsGroup[], issuerDid: Did): Promise<string> {
     const query = gql`
       mutation issueVC(
-          $id: Int!
+          $claimsGroup: [ClaimsGroup!]!,
+          $issuerDid: String!
         ) {  
           issueVC(
-            id: $id
+            claimsGroup: $claimsGroup,
+            issuerDid: $issuerDid
           )
         }      
     `;
 
-    const data = await this.graphQLClient.request(query, {id});
-    return data;
+    const {issueVC} = await this.graphQLClient.request(query, {claimsGroup, issuerDid});
+    return issueVC;
   }
 
   public async getOrCreateAccount(params: KeyValueType): Promise<Did[]> {

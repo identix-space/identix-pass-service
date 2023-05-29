@@ -29,16 +29,13 @@ export class AgentService {
      const {vc, vcSecret} = await this.vcBroker.buildVc(issuerDid, holderDid, vcTypeScheme, vcParams);
 
      const id = await this.walletsStorageClient.saveVC(vc.vcDid, issuerDid, holderDid, JSON.stringify(vc), vcSecret);
-     console.log('vcId', id);
-     const vcDid = await this.walletsStorageClient.issueVC(id);
-     console.log(vcDid);
 
      const eventLog = new EventLogEntity();
      eventLog.eventType = EventTypes.ISSUER_VC;
      eventLog.vcDid = vc.vcDid;
      eventLog.ownerDid = this.agentDid;
-     const vcTypeLog = vcTypeScheme.key === 'STATE_ID' ? "State ID" : "Proof Of Residency"
-     eventLog.message = `Verifiable credentials has been issured. Data: ${JSON.stringify({holder: holderDid, "VC type": vcTypeLog})}`;
+
+     eventLog.message = `Verifiable credentials has been issured. Data: ${JSON.stringify({holder: holderDid, "VC type": vcTypeScheme.key})}`;
 
      await this.eventLogRepository.save(eventLog);
 

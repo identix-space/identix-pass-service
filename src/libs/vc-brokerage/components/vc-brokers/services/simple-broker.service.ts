@@ -2,12 +2,16 @@ import {IWalletsStorageClient} from "@/libs/wallets-storage-client/types";
 import {Did, VC} from "@/libs/vc-brokerage/types";
 import {ClaimsGroup, IVcBroker} from "@/libs/vc-brokerage/components/vc-brokers/types";
 import {IMessagingClient} from "@/libs/messaging/types";
-import {IVcScheme, IVcSchemesClient} from "@/libs/vc-brokerage/components/vc-schemes/types";
+import {IVcScheme} from "@/libs/vc-brokerage/components/vc-schemes/types";
 import {KeyValueType} from "@/libs/common/types";
 import {vcTemplate} from "../constants/vc-template";
-import {credentialSubjectStateId, credentialSubjectProofOfResidency} from "../factories/credential-subjetcs.factories";
+import {credentialSubjectStateId, 
+  credentialSubjectProofOfResidency, 
+  credentialSubjectEmiratesId, 
+  credentialSubjectRealEstate
+} from "../factories/credential-subjetcs.factories";
 
-import hmacSHA256 from 'crypto-js/hmac-sha256';
+import * as hmacSHA256 from 'crypto-js/hmac-sha256';
 import hmac from 'js-crypto-hmac';
 import jseu from 'js-encoding-utils';
 
@@ -70,6 +74,10 @@ export class SimpleBrokerService implements IVcBroker{
         credentialSubjectHolder = credentialSubjectStateId;
       } else if (vcTypeScheme.key === 'PROOF_OF_RESIDENCY') {
         credentialSubjectHolder = credentialSubjectProofOfResidency;
+      } else if (vcTypeScheme.key === 'EMIRATES_ID') {
+        credentialSubjectHolder = credentialSubjectEmiratesId;
+      } else if (vcTypeScheme.key === 'REAL_ESTATE') {
+        credentialSubjectHolder = credentialSubjectRealEstate;
       } else {
         throw new BadRequestException('Unknown VC type')
       }
@@ -85,7 +93,7 @@ export class SimpleBrokerService implements IVcBroker{
         const hmacMsgHash = jseu.encoder.arrayBufferToString(await hmac.compute(key, msg, 'SHA-256'));
         const hmacMsgHashBase64 = Buffer.from(JSON.stringify(hmacMsgHash), 'binary').toString('base64');
 
-        const signResult = await this.walletsStorageClient.signMessage(issuerDid, hmacMsgHashBase64);
+        const signResult = await this.walletsStorageClient.sign(issuerDid, hmacMsgHashBase64);
         const { signed } = signResult;
 
         credentialSubject.push({id, claims, signature: signed});
@@ -121,38 +129,37 @@ export class SimpleBrokerService implements IVcBroker{
     const base64Header = Buffer.from(JSON.stringify(header), 'binary').toString('base64');
     const base64Payload = Buffer.from(JSON.stringify(payload), 'binary').toString('base64');
     const signatureHash = `${base64Header}.${base64Payload}`;
-    const {signed} = await this.walletsStorageClient.signMessage(issuerDid, signatureHash);
+    const {signed} = await this.walletsStorageClient.sign(issuerDid, signatureHash);
 
     return `${base64Header}.${base64Payload}.${Buffer.from(signed, 'binary').toString('base64')}`;
   }
 
-  private async deployVcAndCreateVcDid(credentialSubject: KeyValueType, issuerDid: Did, vsSecret: string): Promise<Did> {
-    const claimsGroups = await this.generateClaimsGroups(credentialSubject, issuerDid, vsSecret);
-    return this.walletsStorageClient.issuerVC(claimsGroups, issuerDid);
+  private async deployVcAndCreateVcDid(credentialSubject: KeyValueType, issuerDid: Did, vcSecret: string): Promise<Did> {
+    const claimsGroups = await this.generateClaimsGroups(credentialSubject, issuerDid, vcSecret);
+    return this.walletsStorageClient.issueVC(claimsGroups, issuerDid);
   }
 
-  private async generateClaimsGroups(credentialSubject: KeyValueType, issuerDid: Did, vsSecret: string): Promise<ClaimsGroup[]> {
-    const { groups } = credentialSubject
+  private async generateClaimsGroups(credentialSubject: KeyValueType, issuerDid: Did, vcSecret: string): Promise<ClaimsGroup[]> {
+    const groups: any = credentialSubject;
     const claimsGroups: ClaimsGroup[] = [];
 
     for await (const group of groups) {
       const {id, claims} = group;
 
-      const signGroupsMsg = hmacSHA256(JSON.stringify({id, claims}), vsSecret)
-      const signGroups = await this.walletsStorageClient.signMessage(issuerDid, signGroupsMsg);
-      const signGroupsLength = Buffer.from(signGroups).length;
+      const signGroupsMsg = hmacSHA256(JSON.stringify({id, claims}), vcSecret).toString();
+      const {signature} = await this.walletsStorageClient.sign(issuerDid, signGroupsMsg);
+      const signGroupsLength = Buffer.from(signature).length;
 
-      let signHighPartMsg =
-        Buffer.from(hmacSHA256(JSON.stringify({id, claims}), vsSecret), 'utf-8')
-      signHighPartMsg = signHighPartMsg.slice(signHighPartMsg.length, 32)
-
+      console.log(hmacSHA256(id, vcSecret).toString());
       claimsGroups.push({
-        hmacHigh_groupDid: Buffer.from(hmacSHA256(id, vsSecret), 'utf-8').slice(8),
-        hmacHigh_claimGroup: Buffer.from(hmacSHA256(JSON.stringify({claims}), vsSecret), 'utf-8').slice(8),
-        signLowPart:  Buffer.from(signGroups).slice(0, 32),
-        signHighPart: Buffer.from(signGroups).slice(Math.max(0, signGroupsLength - 32), signGroupsLength),
+        hmacHigh_groupDid: Buffer.from(hmacSHA256(id, vcSecret).toString(), 'utf-8').subarray(0, 8).toString('hex'),
+        hmacHigh_claimGroup: Buffer.from(hmacSHA256(JSON.stringify({claims}), vcSecret).toString(), 'utf-8').subarray(0, 8).toString('hex'),
+        signLowPart:  Buffer.from(signature).subarray(0, 32).toString('hex'),
+        signHighPart: Buffer.from(signature).subarray(Math.max(0, signGroupsLength - 32), signGroupsLength).toString('hex'),
       });
     }
+
+    console.log(claimsGroups);
 
     return claimsGroups;
   }
