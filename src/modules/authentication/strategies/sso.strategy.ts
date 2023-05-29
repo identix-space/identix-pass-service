@@ -27,7 +27,7 @@ export class SsoStrategy extends PassportStrategy(Strategy, 'sso') {
       throw new UnauthorizedException();
     }
 
-    const userSessionDid = String(headers[this.authorizationTokenHeaderName]);
+    const userSessionDid = String(headers.authorization);
 
     const user = await this.authService.validateUserSession(userSessionDid);
 
