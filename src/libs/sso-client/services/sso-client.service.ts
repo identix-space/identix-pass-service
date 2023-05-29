@@ -32,7 +32,6 @@ export class SsoClientService implements ISSOClientService{
   }
 
   public async validateUserSession(clientSessionDid: Did, userSessionDid: Did): Promise<Account> {
-    console.log(userSessionDid);
     if (this.didSessionsStorage.has(userSessionDid)) {
       const session = this.didSessionsStorage.get(userSessionDid);
       const sessionCreatedAt = session.createdAt;
@@ -45,9 +44,7 @@ export class SsoClientService implements ISSOClientService{
 
     let user;
     try {
-      console.log(userSessionDid);
       user = await this.ssoService.whoami(userSessionDid);
-      console.log(user);
     } catch (e) {
       throw e;
     }
