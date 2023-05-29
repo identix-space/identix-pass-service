@@ -4,14 +4,15 @@ import { IdentixWalletsStorageClient } from "@/libs/wallets-storage-client/clien
 import {WalletsVCData} from "@/libs/wallets-storage-client/types";
 import {faker} from "@faker-js/faker";
 import {did} from "@/libs/common/helpers/strings.helpers";
+import {ClaimsGroup} from "@/libs/vc-brokerage/components/vc-brokers/types";
 
 export class WalletsStorageService {
   constructor(
     protected readonly walletsStorageClient: IdentixWalletsStorageClient
   ) {}
 
-  public async issueVC(id: number): Promise<string> {
-    return this.walletsStorageClient.issueVC(id);
+  public async issueVC(claimsGroup: ClaimsGroup[], issuerDid: Did): Promise<string> {
+    return this.walletsStorageClient.issueVC(claimsGroup, issuerDid);
   }
 
   public async getOrCreateAccount(params: KeyValueType): Promise<Did[]> {

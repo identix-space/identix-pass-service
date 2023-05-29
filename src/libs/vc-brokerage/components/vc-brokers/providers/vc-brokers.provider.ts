@@ -31,7 +31,7 @@ async function  vcBrokersProviderFactory(
   walletsStorageClient: IWalletsStorageClient,
   vcSchemesClient: IVcSchemesClient
 ): Promise<IVcBrokersProvider> {
-  const simpleBroker = new SimpleBrokerService(messagingClient, walletsStorageClient, vcSchemesClient);
+  const simpleBroker = new SimpleBrokerService(messagingClient, walletsStorageClient);
 
   return {
     getBroker: (brokerStrategy: BrokersStrategies): IVcBroker => {
