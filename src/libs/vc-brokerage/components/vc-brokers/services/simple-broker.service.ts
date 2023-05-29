@@ -150,7 +150,6 @@ export class SimpleBrokerService implements IVcBroker{
       const {signature} = await this.walletsStorageClient.sign(issuerDid, signGroupsMsg);
       const signGroupsLength = Buffer.from(signature).length;
 
-      console.log(hmacSHA256(id, vcSecret).toString());
       claimsGroups.push({
         hmacHigh_groupDid: Buffer.from(hmacSHA256(id, vcSecret).toString(), 'utf-8').subarray(0, 8).toString('hex'),
         hmacHigh_claimGroup: Buffer.from(hmacSHA256(JSON.stringify({claims}), vcSecret).toString(), 'utf-8').subarray(0, 8).toString('hex'),
@@ -158,8 +157,6 @@ export class SimpleBrokerService implements IVcBroker{
         signHighPart: Buffer.from(signature).subarray(Math.max(0, signGroupsLength - 32), signGroupsLength).toString('hex'),
       });
     }
-
-    console.log(claimsGroups);
 
     return claimsGroups;
   }
