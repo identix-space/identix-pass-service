@@ -8,7 +8,7 @@ require('dotenv').config(); // eslint-disable-line @typescript-eslint/no-var-req
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const logger = await app.resolve(LoggingService);
-  app.enableCors({ exposedHeaders: 'Authorization'});
+  app.enableCors({ allowedHeaders: ['Authorization', 'authorization'], exposedHeaders: ['Authorization', 'authorization']});
 
   const port = process.env.HTTP_PORT || 3000;
   await app.listen(port);
