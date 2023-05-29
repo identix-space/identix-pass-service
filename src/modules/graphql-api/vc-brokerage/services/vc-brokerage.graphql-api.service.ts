@@ -54,8 +54,10 @@ export class VCBrokerageGraphqlApiService {
     }
 
     const vc: WalletsVCData = await this.getVCAndAuthorize(vcDid, userDid, userAgent);
+    const result = JSON.parse(vc.vcData);
+    result.blockchain = `${process.env.VENOM_LINK}/accounts/${vc.vcDid}`;
 
-    return JSON.parse(vc.vcData);
+    return result;
   }
 
   async getUserVCs(userDid: Did, vcType?: string, role?: AgentsRoles, page: number = 1, limit: number = 100): Promise<VC[]> {
