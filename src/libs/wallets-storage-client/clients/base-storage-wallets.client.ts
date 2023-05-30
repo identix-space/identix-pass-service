@@ -1,5 +1,5 @@
 import {IWalletsStorageClient, WalletsVCData} from "@/libs/wallets-storage-client/types";
-import {Did} from "@/libs/vc-brokerage/types";
+import {Did, VC} from "@/libs/vc-brokerage/types";
 import { KeyValueType } from "@/libs/common/types";
 import { ClaimsGroup } from "@/libs/vc-brokerage/components/vc-brokers/types";
 
@@ -30,8 +30,8 @@ export class BaseStorageWalletsClient implements IWalletsStorageClient {
     return true
   }
 
-  async verifyVC(vcDid: Did, verificationData: string): Promise<boolean> {
-    return true
+  async verifyVC(userDid: Did, titledid: string): Promise<VC> {
+    return;
   }
 
   async generateVcDid(): Promise<{vcDid: Did, vcSecret: string}> {
