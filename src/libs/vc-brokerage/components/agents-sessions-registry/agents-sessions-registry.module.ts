@@ -9,6 +9,7 @@ import {MessagingModule} from "@/libs/messaging/messaging.module";
 import {ConfigModule} from "@nestjs/config";
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {EventLogEntity} from "@/libs/database/entities";
+import {HttpModule} from "@nestjs/axios";
 
 @Module({
     imports: [
@@ -18,7 +19,8 @@ import {EventLogEntity} from "@/libs/database/entities";
         BrokersModule,
         MessagingModule,
         VcSchemesModule,
-        WalletsSrorageClientModule
+        WalletsSrorageClientModule,
+        HttpModule
     ],
     providers: [AgentsSessionsRegistryProvider],
     exports: [AgentsSessionsRegistryProvider]

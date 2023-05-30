@@ -6,6 +6,7 @@ import {Did, VC, VerificationStatuses} from "@/libs/vc-brokerage/types";
 import {Repository} from "typeorm";
 import {EventLogEntity} from "@/libs/database/entities";
 import {EventTypes} from "@/libs/database/types/event-types.type";
+import { HttpService } from "@nestjs/axios";
 
 export class AgentService {
   constructor(
@@ -14,7 +15,8 @@ export class AgentService {
     private vcBroker: IVcBroker,
     private vcSchemes: IVcSchemesClient,
     private walletsStorageClient: IWalletsStorageClient,
-    private eventLogRepository: Repository<EventLogEntity>
+    private eventLogRepository: Repository<EventLogEntity>,
+    private httpService: HttpService,
   ) {}
 
   async getVcTypeSchemes(userDid: Did): Promise<IVcScheme[]> {
@@ -64,17 +66,22 @@ export class AgentService {
     return true
   }
 
-  async verifyVc(vcDid: Did, verificationData: string): Promise<boolean> {
-    await this.walletsStorageClient.verifyVC(vcDid, verificationData);
+  async verifyVc(userDid: Did, verificationData: {titledid: string, reApiUrl: string}): Promise<boolean> {
+    const vc = await this.walletsStorageClient.verifyVC(userDid, verificationData.titledid);
 
-    const eventLog = new EventLogEntity();
-    eventLog.eventType = EventTypes.VERIFICATED;
-    eventLog.vcDid = vcDid;
-    eventLog.ownerDid = this.agentDid;
-    eventLog.message = `Credentials verified. Data: ${JSON.stringify({verificationData})}`;
+    if(vc) {
+      const eventLog = new EventLogEntity();
+      eventLog.eventType = EventTypes.VERIFICATED;
+      eventLog.vcDid = vc.vcDid;
+      eventLog.ownerDid = userDid;
+      eventLog.message = `Credentials verified. Data: ${JSON.stringify({verificationData})}`;
+      await this.eventLogRepository.save(eventLog);
 
-    await this.eventLogRepository.save(eventLog);
+      await this.httpService.patch(verificationData.reApiUrl, {success: true}).toPromise();
+    } else {
+      await this.httpService.patch(verificationData.reApiUrl, {success: false}).toPromise();
+    }
 
-    return true
+    return !!vc
   }
 }

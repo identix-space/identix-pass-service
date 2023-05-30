@@ -1,4 +1,4 @@
-import {Did, VerificationStatuses} from "@/libs/vc-brokerage/types";
+import {Did, VC, VerificationStatuses} from "@/libs/vc-brokerage/types";
 import { KeyValueType} from "@/libs/common/types";
 import { IdentixWalletsStorageClient } from "@/libs/wallets-storage-client/clients/identix-wallets.client";
 import {WalletsVCData} from "@/libs/wallets-storage-client/types";
@@ -35,8 +35,8 @@ export class WalletsStorageService {
     return this.walletsStorageClient.requestVcVerification(vcDid, verifierDid);
   }
 
-  async verifyVC(vcDid: Did, verificationData: string): Promise<boolean> {
-    return this.walletsStorageClient.verifyVC(vcDid, verificationData)
+  async verifyVC(userDid: Did, titledid: string): Promise<VC> {
+    return this.walletsStorageClient.verifyVC(userDid, titledid)
   }
 
   async generateVcDid(): Promise<{vcDid: Did, vcSecret: string}> {

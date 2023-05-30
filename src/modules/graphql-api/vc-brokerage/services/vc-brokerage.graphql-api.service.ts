@@ -96,14 +96,20 @@ export class VCBrokerageGraphqlApiService {
   ): Promise<boolean> {
     const userAgent = this.agentsSessionsRegistry.getAgent(userDid);
     if (!userAgent) {
-      throw new Error('User agent session not found');
+      throw new Error('User agent session not found.');
     }
 
-    //await this.getVCAndAuthorize(vcDid, userDid, userAgent, AgentsRoles.verifier);
+    let data;
+    try {
+      data = JSON.parse(verificationData);
+      if(!data.titledid || !data.reApiUrl) {
+        throw new Error('Invalid verification data.');
+      }
+    } catch (e) {
+      return false;
+    }
 
-    const verifierDid = userDid;
-
-    return true; //!!(await userAgent.verifyVc(vcDid, verifierDid, verificationStatus));
+    return await userAgent.verifyVc(userDid, data);
   }
 
   async getEventLog(userDid: Did): Promise<EventLogEntry[]> {
