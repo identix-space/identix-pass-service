@@ -12,8 +12,6 @@ import {credentialSubjectStateId,
 } from "../factories/credential-subjetcs.factories";
 
 import * as hmacSHA256 from 'crypto-js/hmac-sha256';
-import hmac from 'js-crypto-hmac';
-import jseu from 'js-encoding-utils';
 
 import {BadRequestException} from "@nestjs/common";
 import {faker} from "@faker-js/faker";
@@ -88,9 +86,7 @@ export class SimpleBrokerService implements IVcBroker{
       for await (const group of credentialSubjectTmpl.groups) {
         const {id, claims} = group;
 
-        const key = jseu.encoder.stringToArrayBuffer(vcSecret);
-        const msg = jseu.encoder.stringToArrayBuffer(JSON.stringify({id, claims}));
-        const hmacMsgHash = jseu.encoder.arrayBufferToString(await hmac.compute(key, msg, 'SHA-256'));
+        const hmacMsgHash = hmacSHA256(JSON.stringify({id, claims}), vcSecret);
         const hmacMsgHashBase64 = Buffer.from(JSON.stringify(hmacMsgHash), 'binary').toString('base64');
 
         const signResult = await this.walletsStorageClient.sign(issuerDid, hmacMsgHashBase64);
