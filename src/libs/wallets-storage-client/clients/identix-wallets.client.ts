@@ -33,7 +33,7 @@ export class IdentixWalletsStorageClient extends BaseStorageWalletsClient implem
   }
 
   public async getOrCreateAccount(params: KeyValueType): Promise<Did[]> {
-    return [`did:ever:user:${faker.random.alphaNumeric(30)}`];
+    return [`did:venom:user:${faker.random.alphaNumeric(30)}`];
   }
 
   public async saveVC(vcDid: Did, issuerDid: Did, holderDid: Did, vcData: string, vcSecret: string): Promise<number> {
