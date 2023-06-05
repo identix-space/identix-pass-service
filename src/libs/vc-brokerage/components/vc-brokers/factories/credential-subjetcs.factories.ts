@@ -106,7 +106,6 @@ export function credentialSubjectEmiratesId(holderDid: string, params: KeyValueT
         "id": "emiratesid",
         "claims": [
           { 
-            "subject": holderDid,
             "predicate": "https://schemas.identix.space/emiratesid/idn",
             "object": get(params, 'emiratesid') 
           },
@@ -130,16 +129,6 @@ export function credentialSubjectEmiratesId(holderDid: string, params: KeyValueT
             "predicate": "https://schemas.identix.space/emiratesid/spuuid",
             "object": get(params, 'spuuid') 
           },
-        ]
-      },
-      {
-        "id": "titledeedid",
-        "claims": [
-          {
-            "subject": holderDid,
-            "predicate": "https://schemas.identix.space/realestate_v1/titledeedid",
-            "object": get(params, 'titledeedid')
-          }
         ]
       },
       {
@@ -235,6 +224,16 @@ export function credentialSubjectEmiratesId(holderDid: string, params: KeyValueT
 export function credentialSubjectRealEstate(holderDid: string, params: KeyValueType): KeyValueType {
   return {
     "groups": [
+      {
+        "id": "titledeedid",
+        "claims": [
+          {
+            "subject": holderDid,
+            "predicate": "https://schemas.identix.space/realestate_v1/titledeedid",
+            "object": get(params, 'titledeedid')
+          }
+        ]
+      },
       {
         "id": "address",
         "claims": [
