@@ -103,6 +103,46 @@ export function credentialSubjectEmiratesId(holderDid: string, params: KeyValueT
   return {
     "groups": [
       {
+        "id": "emiratesid",
+        "claims": [
+          { 
+            "subject": holderDid,
+            "predicate": "https://schemas.identix.space/emiratesid/idn",
+            "object": get(params, 'emiratesid') 
+          },
+        ]
+      },
+      {
+        "id": "uuid",
+        "claims": [
+          { 
+            "subject": holderDid,
+            "predicate": "https://schemas.identix.space/emiratesid/uuid",
+            "object": get(params, 'uuid') 
+          },
+        ]
+      },
+      {
+        "id": "spuuid",
+        "claims": [
+          { 
+            "subject": holderDid,
+            "predicate": "https://schemas.identix.space/emiratesid/spuuid",
+            "object": get(params, 'spuuid') 
+          },
+        ]
+      },
+      {
+        "id": "titledeedid",
+        "claims": [
+          {
+            "subject": holderDid,
+            "predicate": "https://schemas.identix.space/realestate_v1/titledeedid",
+            "object": get(params, 'titledeedid')
+          }
+        ]
+      },
+      {
         "id": "namesAR",
         "claims": [
           {
@@ -195,46 +235,6 @@ export function credentialSubjectEmiratesId(holderDid: string, params: KeyValueT
 export function credentialSubjectRealEstate(holderDid: string, params: KeyValueType): KeyValueType {
   return {
     "groups": [
-      {
-        "id": "emiratesid",
-        "claims": [
-          { 
-            "subject": holderDid,
-            "predicate": "https://schemas.identix.space/emiratesid/idn",
-            "object": get(params, 'emiratesid') 
-          },
-        ]
-      },
-      {
-        "id": "uuid",
-        "claims": [
-          { 
-            "subject": holderDid,
-            "predicate": "https://schemas.identix.space/emiratesid/uuid",
-            "object": get(params, 'uuid') 
-          },
-        ]
-      },
-      {
-        "id": "spuuid",
-        "claims": [
-          { 
-            "subject": holderDid,
-            "predicate": "https://schemas.identix.space/emiratesid/spuuid",
-            "object": get(params, 'spuuid') 
-          },
-        ]
-      },
-      {
-        "id": "titledeedid",
-        "claims": [
-          {
-            "subject": holderDid,
-            "predicate": "https://schemas.identix.space/realestate_v1/titledeedid",
-            "object": get(params, 'titledeedid')
-          }
-        ]
-      },
       {
         "id": "address",
         "claims": [
