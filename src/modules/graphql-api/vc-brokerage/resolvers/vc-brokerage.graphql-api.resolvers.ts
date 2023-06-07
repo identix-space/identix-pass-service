@@ -32,11 +32,12 @@ export class VcBrokerageGraphqlApiResolvers {
   @Query(returns => [VC])
   async getUserVCs(
     @Context('req') req: { userDid?: string },
+    @Args('vcType', {type: () => String, nullable: true}) vcType?: string,
     @Args('role', {type: () => AgentsRoles, nullable: true}) role?: AgentsRoles,
-    @Args('startIndex', {type: () => Int, nullable: true}) startIndex?: number,
-    @Args('count', {type: () => Int, nullable: true}) count?: number
+    @Args('page', {type: () => Int, nullable: true}) page?: number,
+    @Args('limit', {type: () => Int, nullable: true}) limit?: number
   ) {
-    return this.vcBrokerageGraphqlAPIService.getUserVCs(req?.userDid, role, startIndex, count);
+    return this.vcBrokerageGraphqlAPIService.getUserVCs(req?.userDid, vcType, role, page, limit);
   }
 
   @Query(returns => VC)
@@ -59,10 +60,9 @@ export class VcBrokerageGraphqlApiResolvers {
   @Mutation(returns => Boolean)
   async verifyVC(
     @Context('req') req: { userDid?: string },
-    @Args('vcDid', {type: () => String}) vcDid: Did,
-    @Args('verificationStatus', {type: () => String}) verificationStatus: VerificationStatuses): Promise<boolean>
-  {
-    return this.vcBrokerageGraphqlAPIService.verifyVc(req?.userDid, vcDid, verificationStatus);
+    @Args('verificationData', {type: () => String}) verificationData: string
+  ) {
+    return this.vcBrokerageGraphqlAPIService.verifyVc(req?.userDid, verificationData);
   }
 
   @Query(returns => [EventLogEntry])

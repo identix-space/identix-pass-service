@@ -44,6 +44,12 @@ async function ssoClientFactory(
   return {
     validateUserSession: async (userSessionDid: Did): Promise<Account> => {
       return ssoClientService.validateUserSession(ssoClientConfig.clientToken, userSessionDid);
-    }
+    },
+    logout: async (token: Did): Promise<boolean> => {
+      return ssoClientService.logout(token);
+    },
+    deleteAccount: async (token: Did): Promise<boolean> => {
+      return ssoClientService.deleteAccount(token);
+    },
   }
 }

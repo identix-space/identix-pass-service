@@ -76,6 +76,9 @@ export class VC {
   vcDid: Did;
 
   @Field(type => String)
+  blockchain: string;
+
+  @Field(type => String)
   vcTypeDid: Did;
 
   @Field(type => String)

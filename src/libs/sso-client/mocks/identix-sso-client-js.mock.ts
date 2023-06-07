@@ -38,6 +38,6 @@ export class MockIdentixSsoClientJsService implements ISsoService {
 
   async getCurrentUserInfo(clientSessionDid: Did, userSessionDid: Did): Promise<UserInfo> {
     const session = this.didSessionsStorage.get(userSessionDid);
-    return { did: String(session.did) }
+    return //{ did: String(session.did) }
   }
 }

@@ -10,6 +10,7 @@ import {IVcSchemesClient, VcSchemesClient} from "@/libs/vc-brokerage/components/
 import {WalletsStorageClient, IWalletsStorageClient} from "@/libs/wallets-storage-client/types";
 import {BadRequestException} from "@nestjs/common";
 import {EventLogEntity} from "@/libs/database/entities";
+import { HttpService } from "@nestjs/axios";
 
 export const AgentsSessionsRegistryProvider = {
   provide: AgentsSessionsRegistry,
@@ -18,7 +19,8 @@ export const AgentsSessionsRegistryProvider = {
                messagingClient: IMessagingClient,
                vcBrokersProvider: IVcBrokersProvider,
                vcSchemesClient: IVcSchemesClient,
-               walletsStorageClient: IWalletsStorageClient
+               walletsStorageClient: IWalletsStorageClient,
+               httpService: HttpService
                ): Promise<IAgentsSessionsRegistry> =>
     agentsSessionsRegistryFactory(
       config,
@@ -26,7 +28,8 @@ export const AgentsSessionsRegistryProvider = {
       messagingClient,
       vcBrokersProvider,
       vcSchemesClient,
-      walletsStorageClient
+      walletsStorageClient,
+      httpService
     ),
   inject: [
     ConfigService,
@@ -34,7 +37,8 @@ export const AgentsSessionsRegistryProvider = {
     MessagingClient,
     VcBrokers,
     VcSchemesClient,
-    WalletsStorageClient
+    WalletsStorageClient,
+    HttpService
   ]
 };
 
@@ -44,7 +48,8 @@ async function  agentsSessionsRegistryFactory(
   messagingClient: IMessagingClient,
   vcBrokersProvider: IVcBrokersProvider,
   vcSchemesClient: IVcSchemesClient,
-  walletsStorageClient: IWalletsStorageClient
+  walletsStorageClient: IWalletsStorageClient,
+  httpService: HttpService
 ): Promise<IAgentsSessionsRegistry> {
   const agentsSessionsStorage: Map<Did, AgentService> = new Map<Did, AgentService>();
 
@@ -64,7 +69,8 @@ async function  agentsSessionsRegistryFactory(
             vcBroker,
             vcSchemesClient,
             walletsStorageClient,
-            eventLogRepository
+            eventLogRepository,
+            httpService
           );
 
         agentsSessionsStorage.set(agentDid, agent);

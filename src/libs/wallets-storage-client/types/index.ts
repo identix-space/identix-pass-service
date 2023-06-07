@@ -1,6 +1,7 @@
-import {Did} from "@/libs/vc-brokerage/types";
+import {Did, VC} from "@/libs/vc-brokerage/types";
 import {KeyValueType} from "@/libs/common/types";
 import {VerificationStatuses} from "@/libs/vc-brokerage/types";
+import {ClaimsGroup} from "@/libs/vc-brokerage/components/vc-brokers/types";
 
 
 export enum WalletsStorageKinds {
@@ -11,12 +12,12 @@ export const WalletsStorageClient = 'WALLETS_STORAGE_CLIENT';
 
 export interface IWalletsStorageClient {
   getOrCreateAccount: (params: KeyValueType) => Promise<Did[]>;
-  issueVC: (id: number) => Promise<string>;
+  issueVC: (claimsGroup: ClaimsGroup[], issuerDid: Did) => Promise<string>;
   saveVC: (vcDid: Did, issuerDid: Did, holderDid: Did, vcData: string, vcSecret) => Promise<number>;
-  getUserVCs: (userDid: Did) =>  Promise<WalletsVCData[]>;
+  getUserVCs: (userDid: Did, vcType: string) =>  Promise<WalletsVCData[]>;
   getVC: (vcDid: Did) => Promise<WalletsVCData>;
   requestVcVerification: (vcDid: Did, verifierDid: Did) => Promise<boolean>;
-  verifyVC: (vcDid: Did, verifierDid: Did, verificationStatus: VerificationStatuses) => Promise<boolean>;
+  verifyVC: (userDid: Did, titleDid: string) => Promise<VC>;
   generateVcDid: () => Promise<{vcDid: Did, vcSecret: string}>;
   sign: (userDid: Did, msg: string) => Promise<{signed: string, signature: string}>;
 }
@@ -35,11 +36,4 @@ export interface WalletsVCData {
     verifierDid: Did,
     verificationStatus: VerificationStatuses
   }[]
-}
-
-export interface ClaimsGroup {
-  macHigh_claimGroup: string,
-  hmacHigh_groupDid: string,
-  signHighPart: string,
-  signLowPart: string
 }

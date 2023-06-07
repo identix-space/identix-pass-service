@@ -54,17 +54,23 @@ export class VCBrokerageGraphqlApiService {
     }
 
     const vc: WalletsVCData = await this.getVCAndAuthorize(vcDid, userDid, userAgent);
+    const result = JSON.parse(vc.vcData);
+    result.blockchain = `${process.env.VENOM_LINK}/accounts/${vc.vcDid}`;
 
-    return JSON.parse(vc.vcData);
+    return result;
   }
 
-  async getUserVCs(userDid: Did, role?: AgentsRoles, page?: number, limit?: number): Promise<VC[]> {
+  async getUserVCs(userDid: Did, vcType?: string, role?: AgentsRoles, page: number = 1, limit: number = 100): Promise<VC[]> {
     const userAgent = this.agentsSessionsRegistry.getAgent(userDid);
     if (!userAgent) {
       throw new Error('User agent session not found');
     }
 
-    const userVCs = (await userAgent.getUserVCs(userDid)).map(wvc => JSON.parse(wvc.vcData));
+    const userVCs = (await userAgent.getUserVCs(userDid, vcType)).slice((page - 1) * limit, page*limit).map(wvc => {
+      const vc = JSON.parse(wvc.vcData);
+      vc.blockchain = `${process.env.VENOM_LINK}/accounts/${vc.vcDid}`;
+      return vc;
+    });
 
     if (role) {
       return userVCs.filter(vc => this.checkUserHasRoleInVC(vc, userDid, role));
@@ -86,19 +92,24 @@ export class VCBrokerageGraphqlApiService {
 
   async verifyVc(
     userDid: Did,
-    vcDid: Did,
-    verificationStatus: VerificationStatuses
+    verificationData: string
   ): Promise<boolean> {
     const userAgent = this.agentsSessionsRegistry.getAgent(userDid);
     if (!userAgent) {
-      throw new Error('User agent session not found');
+      throw new Error('User agent session not found.');
     }
 
-    await this.getVCAndAuthorize(vcDid, userDid, userAgent, AgentsRoles.verifier);
+    let data;
+    try {
+      data = JSON.parse(verificationData);
+      if(!data.titledid || !data.reApiUrl) {
+        throw new Error('Invalid verification data.');
+      }
+    } catch (e) {
+      return false;
+    }
 
-    const verifierDid = userDid;
-
-    return !!(await userAgent.verifyVc(vcDid, verifierDid, verificationStatus));
+    return await userAgent.verifyVc(userDid, data);
   }
 
   async getEventLog(userDid: Did): Promise<EventLogEntry[]> {

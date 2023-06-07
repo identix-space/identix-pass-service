@@ -9,6 +9,7 @@ import { Account } from '@/libs/sso-client/types';
 
 interface ExtendedRequest extends Request {
   userDid: Did;
+  token: Did;
 }
 @Injectable()
 export class SsoStrategy extends PassportStrategy(Strategy, 'sso') {
@@ -20,13 +21,14 @@ export class SsoStrategy extends PassportStrategy(Strategy, 'sso') {
   }
 
   async validate(request: ExtendedRequest): Promise<Account> {
-    const headers = this.getHeaders(request);
+    const headers = request.headers;
 
-    if (!headers || !headers[this.authorizationTokenHeaderName]) {
+    if (!headers || !headers.authorization) {
       throw new UnauthorizedException();
     }
 
-    const userSessionDid = String(headers[this.authorizationTokenHeaderName]);
+    const userSessionDid = String(headers.authorization);
+
     const user = await this.authService.validateUserSession(userSessionDid);
 
     if (!user) {
@@ -34,6 +36,7 @@ export class SsoStrategy extends PassportStrategy(Strategy, 'sso') {
     }
 
     request.userDid = user.did;
+    request.token = userSessionDid;
 
     return user;
   }

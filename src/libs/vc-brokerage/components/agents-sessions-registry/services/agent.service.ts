@@ -6,6 +6,7 @@ import {Did, VC, VerificationStatuses} from "@/libs/vc-brokerage/types";
 import {Repository} from "typeorm";
 import {EventLogEntity} from "@/libs/database/entities";
 import {EventTypes} from "@/libs/database/types/event-types.type";
+import { HttpService } from "@nestjs/axios";
 
 export class AgentService {
   constructor(
@@ -14,7 +15,8 @@ export class AgentService {
     private vcBroker: IVcBroker,
     private vcSchemes: IVcSchemesClient,
     private walletsStorageClient: IWalletsStorageClient,
-    private eventLogRepository: Repository<EventLogEntity>
+    private eventLogRepository: Repository<EventLogEntity>,
+    private httpService: HttpService,
   ) {}
 
   async getVcTypeSchemes(userDid: Did): Promise<IVcScheme[]> {
@@ -29,23 +31,21 @@ export class AgentService {
      const {vc, vcSecret} = await this.vcBroker.buildVc(issuerDid, holderDid, vcTypeScheme, vcParams);
 
      const id = await this.walletsStorageClient.saveVC(vc.vcDid, issuerDid, holderDid, JSON.stringify(vc), vcSecret);
-     const vcDid = await this.walletsStorageClient.issueVC(id);
-     console.log(vcDid);
 
      const eventLog = new EventLogEntity();
      eventLog.eventType = EventTypes.ISSUER_VC;
      eventLog.vcDid = vc.vcDid;
      eventLog.ownerDid = this.agentDid;
-     const vcTypeLog = vcTypeScheme.key === 'STATE_ID' ? "State ID" : "Proof Of Residency"
-     eventLog.message = `Verifiable credentials has been issured. Data: ${JSON.stringify({holder: holderDid, "VC type": vcTypeLog})}`;
+
+     eventLog.message = `Verifiable credentials has been issured. Data: ${JSON.stringify({holder: holderDid, "VC type": vcTypeScheme.key})}`;
 
      await this.eventLogRepository.save(eventLog);
 
      return vc.vcDid;
   }
 
-  async getUserVCs(userDid: Did): Promise<WalletsVCData[]> {
-    return this.walletsStorageClient.getUserVCs(userDid);
+  async getUserVCs(userDid: Did, vcType: string): Promise<WalletsVCData[]> {
+    return this.walletsStorageClient.getUserVCs(userDid, vcType);
   }
 
   async getVC(vcDid: Did): Promise<WalletsVCData> {
@@ -66,17 +66,22 @@ export class AgentService {
     return true
   }
 
-  async verifyVc(vcDid: Did, verifierDid: Did, verificationStatus: VerificationStatuses): Promise<boolean> {
-    await this.walletsStorageClient.verifyVC(vcDid, verifierDid, verificationStatus);
+  async verifyVc(userDid: Did, verificationData: {titledid: string, reApiUrl: string}): Promise<boolean> {
+    const vc = await this.walletsStorageClient.verifyVC(userDid, verificationData.titledid);
 
-    const eventLog = new EventLogEntity();
-    eventLog.eventType = EventTypes.VERIFICATED;
-    eventLog.vcDid = vcDid;
-    eventLog.ownerDid = this.agentDid;
-    eventLog.message = `Credentials verified. Data: ${JSON.stringify({verifier: verifierDid, status: verificationStatus})}`;
+    if(vc) {
+      const eventLog = new EventLogEntity();
+      eventLog.eventType = EventTypes.VERIFICATED;
+      eventLog.vcDid = vc.vcDid;
+      eventLog.ownerDid = userDid;
+      eventLog.message = `Credentials verified. Data: ${JSON.stringify({verificationData})}`;
+      await this.eventLogRepository.save(eventLog);
 
-    await this.eventLogRepository.save(eventLog);
+      await this.httpService.patch(verificationData.reApiUrl, {success: true}).toPromise();
+    } else {
+      await this.httpService.patch(verificationData.reApiUrl, {success: false}).toPromise();
+    }
 
-    return true
+    return !!vc
   }
 }
